@@ -8,11 +8,5 @@ Ext.define('Axp.view.Module', {
     width: 225,
     layout: 'fit',
     bodyBorder: true,
-    border: true,
-    listeners: {
-        afterrender: function (elm, eOpts) {
-            //let element = Ext.query('#' + elm.tabBar.id + ' div[id$=innerCt]')[0];
-            //element.style.backgroundColor = '#f7f7f7';
-        }
-    }
+    border: true
 });
