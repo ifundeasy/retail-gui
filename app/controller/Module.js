@@ -5,6 +5,11 @@ Ext.define('Axp.controller.Module', {
         {ref: 'modules', selector: 'moduleView'},
         {ref: 'contents', selector: 'contentView'},
     ],
+    events: {
+        'moduleView': {
+            cellclick: 'onClickModule'
+        }
+    },
     loadModule: function () {
         let {data} = this.application.backend;
         let modules = Object.assign({}, data.modules);
@@ -26,9 +31,9 @@ Ext.define('Axp.controller.Module', {
             node.expanded = true;
             if (node.class) {
                 let list = node.class.split('.');
-                let cls = list[list.length-1];
+                let cls = list[list.length - 1];
                 cls = cls[0].toUpperCase() + cls.substr(1);
-                list[list.length-1] = cls;
+                list[list.length - 1] = cls;
                 node.class = 'Axp.controller.' + list.join('.');
                 this.application.addController(node.class);
             }
@@ -60,31 +65,42 @@ Ext.define('Axp.controller.Module', {
         }
         return data.menus;
     },
+    onClickModule: function (treepanel, td, cellIndex, record, tr, rowIndex, e, eOpts) {
+        let me = this;
+        let tabPanel = me.getContents();
+        if (record.raw.class) {
+            let viewClass = record.raw.class.replace('Axp.controller', 'Axp.view');
+            let exist = tabPanel.items.items.filter(function (e) {
+                return e.$className === viewClass
+            })[0];
+            if (exist) {
+                tabPanel.setActiveTab(exist);
+            } else {
+                exist = Ext.create(viewClass, {
+                    title: record.raw.text,
+                    layout: 'fit',
+                    margins: 30,
+                    closable: true
+                });
+                tabPanel.add(exist);
+            }
+            tabPanel.setActiveTab(exist);
+        }
+    },
     init: function () {
         let me = this;
-        let treePanel = me.getModules();
-        let tabPanel = me.getContents();
-        treePanel.on('cellclick', function (treepanel, td, cellIndex, record, tr, rowIndex, e, eOpts ){
-            if (record.raw.class) {
-                let viewClass = record.raw.class.replace('Axp.controller', 'Axp.view');
-                let exist = tabPanel.items.items.filter(function (e) {
-                    return e.$className === viewClass
-                })[0];
-                if (exist) {
-                    tabPanel.setActiveTab(exist);
-                } else {
-                    exist = Ext.create(viewClass, {
-                        title: record.raw.text,
-                        layout: 'fit',
-                        margins: 30,
-                        closable: true
-                    });
-                    tabPanel.add(exist);
-                }
-                tabPanel.setActiveTab(exist);
+        let modules = me.loadModule();
+
+        for (let query in me.events) {
+            let events = me.events[query];
+            for (let e in events) {
+                let handler = me[events[e]];
+                if (handler) events[e] = handler;
+                else delete events[e]
             }
-        });
-        let data = me.loadModule();
-        treePanel.setRootNode(data)
+        }
+
+        me.getModules().setRootNode(modules);
+        me.control(me.events);
     }
 });
