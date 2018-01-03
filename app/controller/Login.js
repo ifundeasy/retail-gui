@@ -71,6 +71,54 @@ Ext.define('Axp.controller.Login', {
         });
         return response.data
     },
+    constructModel: function () {
+        let avoids = ['op_id'];
+        let types = {
+            'datetime': 'date',
+            'enum': 'string',
+            'char': 'string',
+            'varchar': 'string',
+            'tinyint': 'int',
+            'int': 'int',
+            'float': 'float',
+            'double': 'float'
+        };
+        let getType = function (str) {
+            return Object.keys(types).filter(function(type){
+                if (str.indexOf(type) === 0) return 1;
+                return 0;
+            })[0]
+        };
+        let obj = {}, models = this.loadModel();
+        let getField = function (name, models) {
+            let writer = [], reader = [];
+            let model = models[name];
+            for (let field in model) {
+                let info = model[field];
+                let type = getType(info.type);
+                if (avoids.indexOf(field) === -1) {
+                    reader.push({name: field, type: types[type]});
+                    writer.push({name: field, type: types[type]});
+                    if (info.prefix) {
+                        let other = models[info.table_ref];
+                        for (let field2 in other) {
+                            let info2 = other[field2];
+                            let type2 = getType(info2.type);
+                            if (field2 !== 'id' && avoids.indexOf(field2) === -1) {
+                                reader.push({name: [info.prefix, field2].join('_'), type: types[type2]});
+                            }
+                        }
+                    }
+                }
+            }
+            return {writer, reader};
+        };
+        for (let table in models) {
+            obj[table] = getField(table, models);
+            obj[table].meta = models[table];
+        }
+        return obj;
+    },
     onAddedMainView: function (cmp) {
         let me = this;
         let {backend} = me.application;
@@ -86,7 +134,7 @@ Ext.define('Axp.controller.Login', {
         cmp.show();
         loginWindow.hide();
         backend.data = me.loadUserInfo();
-        backend.models = me.loadModel();
+        backend.models = me.constructModel();
         me.ctrlRegister.forEach(function (className) {
             me.application.addController(className);
         });
