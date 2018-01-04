@@ -13,6 +13,46 @@ Ext.define('Axp.controller.Module', {
     loadModule: function () {
         let {data} = this.application.backend;
         let modules = Object.assign({}, data.modules);
+        let buildStore = function (grid) {
+            let me = this;
+            let models = {};
+            let {backend} = me.application;
+            let store = grid.getStore();
+            let url = backend.origin + '/api/' + me.modelBackend;
+            let proxy = {
+                type: 'ajax',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Token': localStorage[backend.storageKey]
+                },
+                url,
+                actionMethods: {
+                    create: 'POST',
+                    read: 'GET',
+                    update: 'PUT',
+                    destroy: 'DELETE'
+                },
+                startParam: 'offset',
+                noCache: false,
+                writer: {
+                    type: 'json',
+                    encode: true
+                },
+                reader: {
+                    type: 'json',
+                    root: 'data'
+                }
+            };
+
+            grid.up().treePanel.record.raw.tables.forEach(function (table) {
+                let {reader, writer} = backend.models[table];
+                models[table] = {reader, writer}
+            });
+            store.model.setFields(models[me.modelBackend].reader);
+            store.setProxy(proxy);
+
+            return store;
+        };
 
         data.menus = {
             text: 'Module',
@@ -35,7 +75,9 @@ Ext.define('Axp.controller.Module', {
                 cls = cls[0].toUpperCase() + cls.substr(1);
                 list[list.length - 1] = cls;
                 node.class = 'Axp.controller.' + list.join('.');
-                this.application.addController(node.class);
+                this.application.addController(node.class, {
+                    options: {buildStore}
+                });
             }
             if (!node.parent || (node.parent && hasChildren.length)) {
                 node.leaf = false;
@@ -79,8 +121,9 @@ Ext.define('Axp.controller.Module', {
                 exist = Ext.create(viewClass, {
                     title: record.raw.text,
                     layout: 'fit',
-                    margins: 30,
-                    closable: true
+                    closable: true,
+                    border: true,
+                    treePanel: {el: treepanel, record}
                 });
                 tabPanel.add(exist);
             }
