@@ -4,7 +4,6 @@ Ext.define('Axp.view.Content', {
     region: 'center',
     layout: 'fit',
     margins: '5 5 0 0',
-    border: true,
     listeners: {
         afterrender: function (elm, eOpts) {
             let element = Ext.query('#' + elm.tabBar.id + ' div[id$=innerCt]')[0];
@@ -15,6 +14,7 @@ Ext.define('Axp.view.Content', {
         {
             xtype: 'panel',
             closable: true,
+            border: true,
             title: 'Welcome'
         }
     ]
