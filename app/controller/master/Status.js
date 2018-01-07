@@ -1,21 +1,20 @@
 Ext.define('Axp.controller.master.Status', {
     extend: 'Ext.app.Controller',
-    modelBackend: 'status',
     views: ['master.Status'],
     stores: ['Rest'],
     refs: [
-        {ref: 'thisGrid', selector: 'grid'}
+        {ref: 'statusGrid', selector: 'grid'}
     ],
     events: {
         'grid': {
-            afterlayout: 'onAfterLayout'
+            added: 'onAdded'
         }
     },
-    onAfterLayout: function () {
+    onAdded: async function () {
         let me = this;
-        let grid = me.getThisGrid();
-        let store = this.buildStore(grid);
-        store.load();
+        let grid = me.getStatusGrid();
+        let store = this.buildStore(grid, 'status');
+        await store.Load();
     },
     init: function () {
         let me = this;
