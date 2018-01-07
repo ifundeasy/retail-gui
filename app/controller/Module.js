@@ -13,12 +13,11 @@ Ext.define('Axp.controller.Module', {
     loadModule: function () {
         let {data} = this.application.backend;
         let modules = Object.assign({}, data.modules);
-        let buildStore = function (grid) {
+        let buildStore = function (grid, route, table) {
             let me = this;
-            let models = {};
             let {backend} = me.application;
             let store = grid.getStore();
-            let url = backend.origin + '/api/' + me.modelBackend;
+            let url = backend.origin + '/api/';
             let proxy = {
                 type: 'ajax',
                 headers: {
@@ -35,20 +34,38 @@ Ext.define('Axp.controller.Module', {
                 startParam: 'offset',
                 noCache: false,
                 writer: {
-                    type: 'json',
-                    encode: true
+                    type: 'json'
                 },
                 reader: {
                     type: 'json',
                     root: 'data'
+                },
+                listeners: {
+                    exception: function(proxy, res) {
+                        let err = Ext.JSON.decode(res.responseText);
+                        this.errors = this.errors || [];
+                        this.errors.push(err);
+                        console.error(err.trace);
+                    }
                 }
             };
-
-            grid.up().treePanel.record.raw.tables.forEach(function (table) {
-                let {reader, writer} = backend.models[table];
-                models[table] = {reader, writer}
+            me.modelBackend = me.modelBackend || {};
+            if (!Object.keys(me.modelBackend).length) {
+                grid.up().treePanel.record.raw.tables.forEach(function (model) {
+                    let {reader, writer} = backend.models[model];
+                    me.modelBackend[model] = {reader, writer}
+                });
+            }
+            route = route || Object.keys(me.modelBackend)[0];
+            table = table || route;
+            backend.models[table].reader.push({
+                name: '_', type: 'auto',
+                convert: function (val, rec) {
+                    return rec.raw
+                }
             });
-            store.model.setFields(models[me.modelBackend].reader);
+            proxy.url += route;
+            store.model.setFields(backend.models[table].reader);
             store.setProxy(proxy);
 
             return store;
