@@ -61,10 +61,11 @@ Ext.define('Axp.controller.Module', {
             backend.models[table].reader.push({
                 name: '_', type: 'auto',
                 convert: function (val, rec) {
-                    return rec.raw
+                    return { id: rec.raw.id }
                 }
             });
             proxy.url += route;
+            store.writer = backend.models[table].writer;
             store.model.setFields(backend.models[table].reader);
             store.setProxy(proxy);
 
