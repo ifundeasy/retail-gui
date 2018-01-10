@@ -77,7 +77,6 @@ Ext.define('A.controller.location.Regency', {
         await store.Load();
     },
     init: function () {
-        console.log(me)
         let me = this;
         for (let query in me.events) {
             let events = me.events[query];

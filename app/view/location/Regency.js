@@ -25,6 +25,22 @@
                         editor: {xtype: 'textfield'}
                     },
                     {
+                        text: 'State',
+                        dataIndex: 'state_name',
+                        minWidth: 100,
+                        autoSizeColumn: true,
+                        editor: {
+                            xtype: 'combobox',
+                            store: Ext.create('A.store.State'),
+                            autoScroll: true,
+                            autoShow: true,
+                            forceSelection: true,
+                            queryMode: 'remote',
+                            displayField: 'name',
+                            valueField: 'name'
+                        }
+                    },
+                    {
                         text: 'Status', dataIndex: 'status_name',
                         minWidth: 100,
                         autoSizeColumn: true,

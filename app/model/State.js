@@ -1,6 +1,6 @@
-Ext.define('A.model.Regency', {
+Ext.define('A.model.State', {
     extend: 'Ext.data.Model',
-    pathURL: 'regency',
+    pathURL: 'state',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'name', type: 'string'},
