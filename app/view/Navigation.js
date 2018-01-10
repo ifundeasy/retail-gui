@@ -1,12 +1,12 @@
-Ext.define('A.view.Module', {
+Ext.define('A.view.Navigation', {
     extend: 'Ext.tree.Panel',
-    alias: 'widget.moduleView',
+    alias: 'widget.navigation',
     region: 'west',
     margins: '5 0 0 5',
     split: true,
     tabPosition: 'left',
     width: 225,
-    title: 'Menu',
+    title: 'Navigation',
     collapsible: true,
     layout: 'fit',
     bodyBorder: true,

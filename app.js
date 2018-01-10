@@ -1,5 +1,4 @@
 Ext.app.Application.prototype.addController = function (classPath, opts) {
-    //https://www.sencha.com/forum/showthread.php?132795-Dynamically-loading-MVC-controller/page2
     let self = this,
         config = opts || {};
 
@@ -11,7 +10,7 @@ Ext.app.Application.prototype.addController = function (classPath, opts) {
 
         self.controllers.add(classPath, controller);
 
-        //controller.init();
+        controller.init();
 
         if (config.callback) {
             config.callback.call((config.scope || this), config, controller)
@@ -37,24 +36,20 @@ Ext.app.Application.prototype.addController = function (classPath, opts) {
     }
 
     let {protocol, ip, port, name} = backend;
-    backend.origin = `${protocol+ip}:${port}`;
+    backend.origin = `${protocol + ip}:${port}`;
 
     Ext.application({
         name: 'A',
         appFolder: 'app',
-        controllers: ['A.controller.Login'],
+        controllers: ['Core'],
         version: base.version,
         title: name,
         enableQuickTips: true,
         backend, ajax,
-        launch: function () {
-            Ext.create('Ext.container.Viewport', {
-                layout: 'fit',
-                items: [
-                    {xtype: 'loginView'},
-                    {xtype: 'mainView'}
-                ]
-            });
+        autoCreateViewport: true,
+        onAddController: function (index, controller, key) {
+            console.log('onAddController?');
+            controller.init();
         }
     });
 })();

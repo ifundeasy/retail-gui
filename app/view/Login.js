@@ -1,6 +1,6 @@
 Ext.define('A.view.Login', {
     extend: 'Ext.window.Window',
-    alias: 'widget.loginView',
+    alias: 'widget.login',
     title: 'Please login',
     width: 400,
     autoHeight: true,

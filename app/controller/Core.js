@@ -1,24 +1,19 @@
-Ext.define('A.controller.Login', {
+Ext.define('A.controller.Core', {
     extend: 'Ext.app.Controller',
-    views: ['Main', 'Login'],
-    ctrlRegister: [
-        'A.controller.Module',
-        'A.controller.Content'
+    views: ['Content', 'Navigation', 'Login'],
+    refs: [
+        {ref: 'navView', selector: 'navigation'},
+        {ref: 'mainView', selector: 'content'},
+        {ref: 'loginWindow', selector: 'login'}
     ],
     events: {
-        'mainView': {
-            added: 'onAddedMainView'
-        },
-        'loginView': {
-            added: 'onAddedLoginView'
-        },
-        'loginView button[action=login]': {
+        'login button[action=login]': {
             click: 'onClickLogin'
         },
-        'loginView textfield': {
+        'login textfield': {
             specialkey: 'onKeyDown'
         },
-        'mainView button[action=logout]': {
+        'viewport > container > panel > toolbar > button[action="logout"]': {
             click: 'onClickLogout'
         }
     },
@@ -119,30 +114,6 @@ Ext.define('A.controller.Login', {
         }
         return obj;
     },
-    onAddedMainView: function (cmp) {
-        let me = this;
-        let {backend} = me.application;
-        let logged = this.loadSession();
-        let loginWindow = cmp.up().down('loginView');
-
-        if (!logged) {
-            cmp.hide();
-            loginWindow.show();
-            return;
-        }
-
-        cmp.show();
-        loginWindow.hide();
-        backend.data = me.loadUserInfo();
-        backend.models = me.constructModel();
-        me.ctrlRegister.forEach(function (className) {
-            me.application.addController(className, {
-                callback: function (scope, controller) {
-                    controller.init()
-                }
-            });
-        });
-    },
     onClickLogin: function (button) {
         let me = this;
         let {backend} = me.application;
@@ -204,5 +175,23 @@ Ext.define('A.controller.Login', {
             }
         }
         this.control(me.events);
+    },
+    onLaunch: function () {
+        let {backend} = this.application;
+        let logged = this.loadSession();
+        let loggedView = this.getNavView().up('viewport').down('container');
+
+        if (logged) {
+            this.getLoginWindow().hide();
+            loggedView.show();
+
+            backend.data = this.loadUserInfo();
+            backend.models = this.constructModel();
+
+            this.application.addController('A.controller.Navigation');
+        } else {
+            loggedView.hide();
+            this.getLoginWindow().show();
+        }
     }
 });

@@ -1,76 +1,18 @@
-Ext.define('A.controller.Module', {
+Ext.define('A.controller.Navigation', {
     extend: 'Ext.app.Controller',
-    views: ['Module'],
+    views: ['Navigation'],
     refs: [
-        {ref: 'modules', selector: 'moduleView'},
-        {ref: 'contents', selector: 'contentView'},
+        {ref: 'navView', selector: 'navigation'},
+        {ref: 'mainView', selector: 'content'}
     ],
     events: {
-        'moduleView': {
+        'navigation': {
             cellclick: 'onClickModule'
         }
     },
     loadModule: function () {
         let {data} = this.application.backend;
         let modules = Object.assign({}, data.modules);
-        let buildStore = function (grid, route, table) {
-            let me = this;
-            let {backend} = me.application;
-            let store = grid.getStore();
-            let url = backend.origin + '/api/';
-            let proxy = {
-                type: 'ajax',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Token': localStorage[backend.storageKey]
-                },
-                url,
-                actionMethods: {
-                    create: 'POST',
-                    read: 'GET',
-                    update: 'PUT',
-                    destroy: 'DELETE'
-                },
-                startParam: 'offset',
-                noCache: false,
-                writer: {
-                    type: 'json'
-                },
-                reader: {
-                    type: 'json',
-                    root: 'data'
-                },
-                listeners: {
-                    exception: function(proxy, res) {
-                        let err = Ext.JSON.decode(res.responseText);
-                        this.errors = this.errors || [];
-                        this.errors.push(err);
-                        console.error(err.trace);
-                    }
-                }
-            };
-            me.modelBackend = me.modelBackend || {};
-            if (!Object.keys(me.modelBackend).length) {
-                grid.up().treePanel.record.raw.tables.forEach(function (model) {
-                    let {reader, writer} = backend.models[model];
-                    me.modelBackend[model] = {reader, writer}
-                });
-            }
-            route = route || Object.keys(me.modelBackend)[0];
-            table = table || route;
-            backend.models[table].reader.push({
-                name: '_', type: 'auto',
-                convert: function (val, rec) {
-                    return { id: rec.raw.id }
-                }
-            });
-            proxy.url += route;
-            store.writer = backend.models[table].writer;
-            store.model.setFields(backend.models[table].reader);
-            store.setProxy(proxy);
-
-            return store;
-        };
 
         data.menus = {
             text: 'Module',
@@ -93,15 +35,7 @@ Ext.define('A.controller.Module', {
                 cls = cls[0].toUpperCase() + cls.substr(1);
                 list[list.length - 1] = cls;
                 node.class = 'A.controller.' + list.join('.');
-                //this.application.addController(node.class);
-                //this.application.addController(node.class, {
-                //    options: {buildStore}
-                //});
-                this.application.addController(node.class, {
-                    callback: function (scope, controller) {
-                        node.controller = controller;
-                    }
-                });
+                this.application.addController(node.class);
             }
             if (!node.parent || (node.parent && hasChildren.length)) {
                 node.leaf = false;
@@ -133,7 +67,7 @@ Ext.define('A.controller.Module', {
     },
     onClickModule: function (treepanel, td, cellIndex, record, tr, rowIndex, e, eOpts) {
         let me = this;
-        let tabPanel = me.getContents();
+        let tabPanel = me.getMainView();
         if (record.raw.class) {
             let viewClass = record.raw.class.replace('A.controller', 'A.view');
             let exist = tabPanel.items.items.filter(function (e) {
@@ -149,7 +83,6 @@ Ext.define('A.controller.Module', {
                 });
                 tabPanel.add(exist);
             }
-            console.log(record.raw.controller)
             tabPanel.setActiveTab(exist);
             tabPanel.doLayout();
         }
@@ -157,6 +90,8 @@ Ext.define('A.controller.Module', {
     init: function () {
         let me = this;
         let modules = me.loadModule();
+
+        me.getNavView().setRootNode(modules);
 
         for (let query in me.events) {
             let events = me.events[query];
@@ -167,7 +102,6 @@ Ext.define('A.controller.Module', {
             }
         }
 
-        me.getModules().setRootNode(modules);
         me.control(me.events);
     }
 });
