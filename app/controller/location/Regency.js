@@ -1,7 +1,6 @@
 Ext.define('A.controller.location.Regency', {
     extend: 'Ext.app.Controller',
     views: ['location.Regency'],
-    stores: ['Regency', 'State', 'Status'],
     refs: [
         {ref: 'myGrid', selector: 'masterRegency grid'}
     ],

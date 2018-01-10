@@ -1,7 +1,6 @@
 Ext.define('A.controller.master.Media', {
     extend: 'Ext.app.Controller',
     views: ['master.Media'],
-    stores: ['Media', 'Status'],
     refs: [
         {ref: 'myGrid', selector: 'masterMedia grid'}
     ],

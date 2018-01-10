@@ -1,7 +1,6 @@
 Ext.define('A.controller.master.Status', {
     extend: 'Ext.app.Controller',
     views: ['master.Status'],
-    stores: ['Status'],
     refs: [
         {ref: 'myGrid', selector: 'masterStatus grid'}
     ],
