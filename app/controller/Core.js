@@ -37,6 +37,8 @@ Ext.define('A.controller.Core', {
             headers: {'X-Token': token}
         });
 
+        response = response || {};
+
         if (response.logged) {
             backend.logged = response.logged;
             return 1;
@@ -180,13 +182,20 @@ Ext.define('A.controller.Core', {
         let {backend} = this.application;
         let logged = this.loadSession();
         let loggedView = this.getNavView().up('viewport').down('container');
+        let title = loggedView.down('panel > toolbar > component[todo=appname]');
+        let username = loggedView.down('panel > toolbar > component[todo=username]');
 
+        title.el.dom.innerText = backend.name;
         if (logged) {
             this.getLoginWindow().hide();
             loggedView.show();
 
             backend.data = this.loadUserInfo();
             backend.models = this.constructModel();
+
+            username.el.dom.innerText = 'Logged as ' + backend.data.user.username;
+            username.hide();
+            username.show();
 
             this.application.addController('A.controller.Navigation');
         } else {

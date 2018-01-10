@@ -18,11 +18,42 @@ Ext.define('A.view.Viewport', {
                         {
                             xtype: 'panel',
                             width: '100%',
-                            buttons: [
+                            dockedItems: [
                                 {
-                                    text: 'Logout',
-                                    type: 'submit',
-                                    action: 'logout'
+                                    xtype: 'toolbar',
+                                    dock: 'top',
+                                    style: {
+                                        'backgroundColor' : '#197fcc'
+                                    },
+                                    items: [
+                                        {
+                                            xtype: 'component',
+                                            html: 'Hello World!',
+                                            todo: 'appname',
+                                            style: {
+                                                color: '#FFFFFF',
+                                                fontSize: '16px',
+                                                fontWeight: 'bolder'
+                                            }
+                                        },
+                                        '->',
+                                        {
+                                            xtype: 'component',
+                                            html: 'Logged as user',
+                                            todo: 'username',
+                                            style: {
+                                                color: '#FFFFFF'
+                                            }
+                                        },
+                                        '',
+                                        {
+                                            xtype: 'button',
+                                            text: 'Logout',
+                                            type: 'submit',
+                                            action: 'logout',
+                                            cls: 'btn-danger',
+                                        }
+                                    ]
                                 }
                             ]
                         },

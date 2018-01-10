@@ -3,3 +3,19 @@
     background-repeat: no-repeat;
     background-position: center center;
 }
+.btn-danger {
+    background-image: none;
+    background-color: #f03600;
+    border-color: #d10000;
+}
+.btn-danger .x-btn-inner {
+    color: #f0f8ff
+}
+.btn-danger:hover {
+    background-image: none;
+    background-color: #ff3800;
+    border-color: #dd0000;
+}
+.btn-danger .x-btn-inner:hover {
+    color: #FFFFFF;
+}
