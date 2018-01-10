@@ -1,3 +1,4 @@
+Ext.require('A.store.Rest');
 Ext.define('A.controller.Navigation', {
     extend: 'Ext.app.Controller',
     views: ['Navigation'],
@@ -35,13 +36,8 @@ Ext.define('A.controller.Navigation', {
                 cls = cls[0].toUpperCase() + cls.substr(1);
                 list[list.length - 1] = cls;
                 node.class = 'A.controller.' + list.join('.');
-                this.application.addController(node.class);
             }
-            if (!node.parent || (node.parent && hasChildren.length)) {
-                node.leaf = false;
-            } else {
-                node.leaf = true;
-            }
+            node.leaf = !node.parent || (node.parent && hasChildren.length) ? false : true;
         }
         for (let m in modules) {
             let node = modules[m];
@@ -67,24 +63,33 @@ Ext.define('A.controller.Navigation', {
     },
     onClickModule: function (treepanel, td, cellIndex, record, tr, rowIndex, e, eOpts) {
         let me = this;
+        let manager = Ext.ClassManager;
         let tabPanel = me.getMainView();
-        if (record.raw.class) {
-            let viewClass = record.raw.class.replace('A.controller', 'A.view');
-            let exist = tabPanel.items.items.filter(function (e) {
-                return e.$className === viewClass
-            })[0];
-            if (!exist) {
-                exist = Ext.create(viewClass, {
-                    title: record.raw.text,
-                    layout: 'fit',
-                    closable: true,
-                    border: true,
-                    treePanel: {el: treepanel, record}
-                });
-                tabPanel.add(exist);
-            }
-            tabPanel.setActiveTab(exist);
-            tabPanel.doLayout();
+        let controllerCls = record.raw.class;
+
+        if (controllerCls) {
+            let viewCls = controllerCls.replace('A.controller', 'A.view');
+            let callback = function () {
+                let exist = tabPanel.items.items.filter(function (e) {
+                    return e.$className === viewCls
+                })[0];
+
+                if (!exist) {
+                    exist = Ext.create(viewCls, {
+                        title: record.raw.text,
+                        layout: 'fit',
+                        closable: true,
+                        border: true,
+                        treePanel: {el: treepanel, record}
+                    });
+                    tabPanel.add(exist);
+                }
+                tabPanel.setActiveTab(exist);
+                tabPanel.doLayout();
+            };
+            if (!manager.isCreated(controllerCls)) {
+                me.application.addController(controllerCls, {callback});
+            } else callback();
         }
     },
     init: function () {
