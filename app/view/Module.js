@@ -1,4 +1,4 @@
-Ext.define('Axp.view.Module', {
+Ext.define('A.view.Module', {
     extend: 'Ext.tree.Panel',
     alias: 'widget.moduleView',
     region: 'west',
@@ -6,6 +6,8 @@ Ext.define('Axp.view.Module', {
     split: true,
     tabPosition: 'left',
     width: 225,
+    title: 'Menu',
+    collapsible: true,
     layout: 'fit',
     bodyBorder: true,
     border: true

@@ -1,9 +1,9 @@
-Ext.define('Axp.view.Main', {
+Ext.define('A.view.Main', {
     extend: 'Ext.container.Container',
     alias: 'widget.mainView',
     requires: [
-        'Axp.view.Content',
-        'Axp.view.Module'
+        'A.view.Content',
+        'A.view.Module'
     ],
     layout: 'vbox',
     items: [

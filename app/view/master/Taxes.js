@@ -1,3 +1,3 @@
-Ext.define('Axp.view.master.Taxes', {
+Ext.define('A.view.master.Taxes', {
     extend: 'Ext.panel.Panel'
 });

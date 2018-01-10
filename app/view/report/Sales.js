@@ -1,3 +1,3 @@
-Ext.define('Axp.view.report.Sales', {
+Ext.define('A.view.report.Sales', {
     extend: 'Ext.panel.Panel'
 });

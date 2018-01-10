@@ -1,3 +1,3 @@
-Ext.define('Axp.view.master.Discount', {
+Ext.define('A.view.master.Discount', {
     extend: 'Ext.panel.Panel'
 });

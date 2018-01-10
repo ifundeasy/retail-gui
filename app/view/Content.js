@@ -1,4 +1,4 @@
-Ext.define('Axp.view.Content', {
+Ext.define('A.view.Content', {
     extend: 'Ext.tab.Panel',
     alias: 'widget.contentView',
     region: 'center',

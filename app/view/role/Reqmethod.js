@@ -1,3 +1,3 @@
-Ext.define('Axp.view.role.Reqmethod', {
+Ext.define('A.view.role.Reqmethod', {
     extend: 'Ext.panel.Panel'
 });

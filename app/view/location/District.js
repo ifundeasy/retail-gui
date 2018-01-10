@@ -1,3 +1,3 @@
-Ext.define('Axp.view.location.District', {
+Ext.define('A.view.location.District', {
     extend: 'Ext.panel.Panel'
 });

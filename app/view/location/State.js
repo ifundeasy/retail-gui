@@ -1,3 +1,3 @@
-Ext.define('Axp.view.location.State', {
+Ext.define('A.view.location.State', {
     extend: 'Ext.panel.Panel'
 });

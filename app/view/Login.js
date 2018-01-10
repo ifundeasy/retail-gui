@@ -1,4 +1,4 @@
-Ext.define('Axp.view.Login', {
+Ext.define('A.view.Login', {
     extend: 'Ext.window.Window',
     alias: 'widget.loginView',
     title: 'Please login',

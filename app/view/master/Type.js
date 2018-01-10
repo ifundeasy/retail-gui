@@ -1,3 +1,3 @@
-Ext.define('Axp.view.master.Type', {
+Ext.define('A.view.master.Type', {
     extend: 'Ext.panel.Panel'
 });

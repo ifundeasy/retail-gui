@@ -1,3 +1,3 @@
-Ext.define('Axp.view.role.Module', {
+Ext.define('A.view.role.Module', {
     extend: 'Ext.panel.Panel'
 });

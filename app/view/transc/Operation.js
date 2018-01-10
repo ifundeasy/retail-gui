@@ -1,3 +1,3 @@
-Ext.define('Axp.view.transc.Operation', {
+Ext.define('A.view.transc.Operation', {
     extend: 'Ext.panel.Panel'
 });
