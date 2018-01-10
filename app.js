@@ -26,6 +26,8 @@ Ext.onReady(function () {
         let {protocol, ip, port, name} = backend;
         backend.origin = `${protocol + ip}:${port}`;
 
+        $('title').text(backend.name);
+
         Ext.app.Application.prototype.addController = function (classPath, opts) {
             let self = this, config = opts || {};
 
