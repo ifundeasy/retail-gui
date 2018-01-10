@@ -1,4 +1,4 @@
-Ext.define('Axp.controller.transc.Purchase', {
+Ext.define('A.controller.transc.Purchase', {
     extend: 'Ext.app.Controller',
     views: ['transc.Purchase'],
     init: function () {

@@ -1,10 +1,10 @@
-Ext.define('Axp.controller.Login', {
-    ctrlRegister: [
-        'Axp.controller.Module',
-        'Axp.controller.Content'
-    ],
+Ext.define('A.controller.Login', {
     extend: 'Ext.app.Controller',
     views: ['Main', 'Login'],
+    ctrlRegister: [
+        'A.controller.Module',
+        'A.controller.Content'
+    ],
     events: {
         'mainView': {
             added: 'onAddedMainView'
@@ -136,7 +136,11 @@ Ext.define('Axp.controller.Login', {
         backend.data = me.loadUserInfo();
         backend.models = me.constructModel();
         me.ctrlRegister.forEach(function (className) {
-            me.application.addController(className);
+            me.application.addController(className, {
+                callback: function (scope, controller) {
+                    controller.init()
+                }
+            });
         });
     },
     onClickLogin: function (button) {

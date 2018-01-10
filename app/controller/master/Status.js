@@ -1,19 +1,80 @@
-Ext.define('Axp.controller.master.Status', {
+Ext.define('A.controller.master.Status', {
     extend: 'Ext.app.Controller',
     views: ['master.Status'],
-    stores: ['Rest'],
+    stores: ['Status'],
     refs: [
-        {ref: 'statusGrid', selector: 'grid'}
+        {ref: 'myGrid', selector: 'masterStatus grid'}
     ],
     events: {
-        'grid': {
-            added: 'onAdded'
+        'masterStatus grid': {
+            afterrender: 'addedGrid',
+            deselect: 'deselectRow',
+            select: 'selectRow',
+        },
+        'masterStatus grid dataview': {
+            refresh: 'refreshView'
+        },
+        'masterStatus actioncolumn[todo="edit"]': {
+            click: 'editRow'
+        },
+        'masterStatus actioncolumn[todo="delete"]': {
+            click: 'deleteRow'
+        },
+        'masterStatus toolbar button[todo="add"]': {
+            click: 'addRow'
+        },
+        'masterStatus toolbar button[todo="delete"]': {
+            click: 'deleteRows'
+        },
+        'masterStatus toolbar button[todo="save"]': {
+            click: 'saveRows'
         }
     },
-    onAdded: async function () {
+    refreshView: function (dataview) {
+        if (dataview.panel) {
+            Ext.each(dataview.panel.columns, function (column) {
+                if (column.autoSizeColumn === true) {
+                    column.autoSize();
+                }
+            })
+        }
+
+    },
+    addRow: function () {
+        console.log('masterStatus addRow')
+    },
+    editRow: function (grid, rowIndex, colIndex, item, e, record) {
+        console.log('masterStatus editRow')
+    },
+    deleteRow: function (grid, rowIndex, colIndex, item, e, record) {
+        console.log('masterStatus deleteRow')
+    },
+    deleteRows: function () {
+        console.log('masterStatus deleteRows')
+    },
+    saveRows: async function () {
         let me = this;
-        let grid = me.getStatusGrid();
-        let store = this.buildStore(grid, 'status');
+        let grid = me.getMyGrid();
+        let store = grid.getStore();
+        let mySync = await store.Sync();
+        if (mySync instanceof Error) {
+            console.log(mySync)
+        } else {
+            console.log('SUCCESS', mySync);
+            await store.Load();
+        }
+    },
+    deselectRow: function (model, record, index) {
+        console.log('masterStatus deselectRow')
+    },
+    selectRow: function (model, record, index) {
+        console.log('masterStatus selectRow')
+    },
+    addedGrid: async function () {
+        let me = this;
+        let grid = me.getMyGrid();
+        let store = grid.getStore();
+
         await store.Load();
     },
     init: function () {

@@ -1,4 +1,4 @@
-Ext.define('Axp.controller.role.Actor', {
+Ext.define('A.controller.role.Actor', {
     extend: 'Ext.app.Controller',
     views: ['role.Actor'],
     init: function () {

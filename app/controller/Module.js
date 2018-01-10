@@ -1,4 +1,4 @@
-Ext.define('Axp.controller.Module', {
+Ext.define('A.controller.Module', {
     extend: 'Ext.app.Controller',
     views: ['Module'],
     refs: [
@@ -92,9 +92,15 @@ Ext.define('Axp.controller.Module', {
                 let cls = list[list.length - 1];
                 cls = cls[0].toUpperCase() + cls.substr(1);
                 list[list.length - 1] = cls;
-                node.class = 'Axp.controller.' + list.join('.');
+                node.class = 'A.controller.' + list.join('.');
+                //this.application.addController(node.class);
+                //this.application.addController(node.class, {
+                //    options: {buildStore}
+                //});
                 this.application.addController(node.class, {
-                    options: {buildStore}
+                    callback: function (scope, controller) {
+                        node.controller = controller;
+                    }
                 });
             }
             if (!node.parent || (node.parent && hasChildren.length)) {
@@ -129,13 +135,11 @@ Ext.define('Axp.controller.Module', {
         let me = this;
         let tabPanel = me.getContents();
         if (record.raw.class) {
-            let viewClass = record.raw.class.replace('Axp.controller', 'Axp.view');
+            let viewClass = record.raw.class.replace('A.controller', 'A.view');
             let exist = tabPanel.items.items.filter(function (e) {
                 return e.$className === viewClass
             })[0];
-            if (exist) {
-                tabPanel.setActiveTab(exist);
-            } else {
+            if (!exist) {
                 exist = Ext.create(viewClass, {
                     title: record.raw.text,
                     layout: 'fit',
@@ -145,7 +149,9 @@ Ext.define('Axp.controller.Module', {
                 });
                 tabPanel.add(exist);
             }
+            console.log(record.raw.controller)
             tabPanel.setActiveTab(exist);
+            tabPanel.doLayout();
         }
     },
     init: function () {

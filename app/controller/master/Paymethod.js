@@ -1,4 +1,4 @@
-Ext.define('Axp.controller.master.Paymethod', {
+Ext.define('A.controller.master.Paymethod', {
     extend: 'Ext.app.Controller',
     views: ['master.Paymethod'],
     init: function () {

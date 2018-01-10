@@ -1,4 +1,4 @@
-Ext.define('Axp.controller.role.Module', {
+Ext.define('A.controller.role.Module', {
     extend: 'Ext.app.Controller',
     views: ['role.Module'],
     init: function () {

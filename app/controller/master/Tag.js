@@ -1,4 +1,4 @@
-Ext.define('Axp.controller.master.Tag', {
+Ext.define('A.controller.master.Tag', {
     extend: 'Ext.app.Controller',
     views: ['master.Tag'],
     init: function () {

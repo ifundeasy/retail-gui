@@ -1,4 +1,4 @@
-Ext.define('Axp.controller.report.Operation', {
+Ext.define('A.controller.report.Operation', {
     extend: 'Ext.app.Controller',
     views: ['report.Operation'],
     init: function () {

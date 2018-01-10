@@ -1,4 +1,4 @@
-Ext.define('Axp.controller.master.Type', {
+Ext.define('A.controller.master.Type', {
     extend: 'Ext.app.Controller',
     views: ['master.Type'],
     init: function () {

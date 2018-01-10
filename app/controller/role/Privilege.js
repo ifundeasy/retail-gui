@@ -1,4 +1,4 @@
-Ext.define('Axp.controller.role.Privilege', {
+Ext.define('A.controller.role.Privilege', {
     extend: 'Ext.app.Controller',
     views: ['role.Privilege'],
     init: function () {

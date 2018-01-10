@@ -1,4 +1,4 @@
-Ext.define('Axp.controller.location.District', {
+Ext.define('A.controller.location.District', {
     extend: 'Ext.app.Controller',
     views: ['location.District'],
     init: function () {
