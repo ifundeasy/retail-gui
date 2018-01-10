@@ -11,49 +11,12 @@ Ext.app.Application.prototype.addController = function (classPath, opts) {
 
         self.controllers.add(classPath, controller);
 
-        controller.init();
+        //controller.init();
 
         if (config.callback) {
-            config.callback.call((config.scope || this), config);
+            config.callback.call((config.scope || this), config, controller)
         }
     });
-};
-Ext.data.Store.prototype.Load = function () {
-    let self = this;
-    return new Promise(function (resolve, reject) {
-        self.load({
-            scope: self,
-            callback: function (records, operation, success) {
-                if (success) resolve(records);
-                else reject(operation);
-            }
-        });
-    });
-};
-Ext.data.Store.prototype.Sync = async function () {
-    let self = this;
-    let helper = async function () {
-        return new Promise(function (resolve, reject) {
-            self.sync({
-                scope: self.proxy,
-                callback: function (records, operation, success) {
-                    if (records.exceptions.length) {
-                        reject(operation);
-                    } else resolve(records)
-                }
-            });
-        });
-    };
-
-    try {
-        return (await helper());
-    } catch (e) {
-        let errs = e.scope.errors;
-        let err = errs[errs.length-1];
-        let error = new Error(err.trace);
-        error.objective = e;
-        return error
-    }
 };
 (function () {
     let ajax = function (config = {}) {
@@ -77,9 +40,9 @@ Ext.data.Store.prototype.Sync = async function () {
     backend.origin = `${protocol+ip}:${port}`;
 
     Ext.application({
-        name: 'Axp',
+        name: 'A',
         appFolder: 'app',
-        controllers: ['Login'],
+        controllers: ['A.controller.Login'],
         version: base.version,
         title: name,
         enableQuickTips: true,
