@@ -1,13 +1,17 @@
 Ext.require([
+    'A.ux.CheckboxListCombo',
     'A.store.State',
     'A.store.Regency',
-    'A.store.Status'
+    'A.store.Status',
+    'A.store.KeyValue'
 ]);
 Ext.define('A.view.location.Regency', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterRegency',
     initComponent: function () {
         let store = Ext.create('A.store.Regency');
+        let statusStore = Ext.create('A.store.Status');
+        let stateStore = Ext.create('A.store.State');
 
         Ext.apply(this, {
             items: [
@@ -31,34 +35,58 @@ Ext.define('A.view.location.Regency', {
                             editor: {xtype: 'textfield'}
                         },
                         {
-                            text: 'State',
-                            dataIndex: 'state_name',
+                            text: 'Code',
+                            dataIndex: 'short',
                             minWidth: 100,
                             autoSizeColumn: true,
+                            editor: {xtype: 'textfield'}
+                        },
+                        {
+                            text: 'State',
+                            dataIndex: 'state_id',
+                            minWidth: 100,
+                            autoSizeColumn: true,
+                            renderer: function (val, meta, record, rowIndex) {
+                                if (!record.dirty) return record.data.state_name;
+                                let idx = stateStore.findBy(function (rec) {
+                                    if (rec.data.id == val) return 1;
+                                    return 0
+                                });
+                                return stateStore.getAt(idx).get('name')
+                            },
                             editor: {
                                 xtype: 'combobox',
-                                store: Ext.create('A.store.State'),
+                                store: stateStore,
                                 autoScroll: true,
                                 autoShow: true,
                                 forceSelection: true,
                                 queryMode: 'remote',
                                 displayField: 'name',
-                                valueField: 'name'
+                                valueField: 'id'
                             }
                         },
                         {
-                            text: 'Status', dataIndex: 'status_name',
+                            text: 'Status',
+                            dataIndex: 'status_id',
                             minWidth: 100,
                             autoSizeColumn: true,
+                            renderer: function (val, meta, record, rowIndex) {
+                                if (!record.dirty) return record.data.status_name;
+                                let idx = statusStore.findBy(function (rec) {
+                                    if (rec.data.id == val) return 1;
+                                    return 0
+                                });
+                                return statusStore.getAt(idx).get('name')
+                            },
                             editor: {
                                 xtype: 'combobox',
-                                store: Ext.create('A.store.Status'),
+                                store: statusStore,
                                 autoScroll: true,
                                 autoShow: true,
                                 forceSelection: true,
                                 queryMode: 'remote',
                                 displayField: 'name',
-                                valueField: 'name'
+                                valueField: 'id'
                             }
                         },
                         {
@@ -126,14 +154,13 @@ Ext.define('A.view.location.Regency', {
                                     todo: 'add',
                                     tooltip: 'Add new',
                                 },
-                                '->',
                                 {
                                     xtype: 'button',
                                     icon: 'img/icons/essential/png/trash.png',
                                     iconCls: 'icon-bg',
                                     text: 'Delete',
                                     todo: 'delete',
-                                    tooltip: 'Batch delete',
+                                    tooltip: 'Delete selection',
                                 },
                                 {
                                     xtype: 'button',
@@ -141,7 +168,25 @@ Ext.define('A.view.location.Regency', {
                                     iconCls: 'icon-bg',
                                     text: 'Save',
                                     todo: 'save',
-                                    tooltip: 'Batch save',
+                                    tooltip: 'Save selection',
+                                },
+                                '->',
+                                {
+                                    xtype: 'checkboxlistcombo',
+                                    displayField: 'value',
+                                    valueField: 'key',
+                                    editable: false,
+                                    fieldLabel: 'Search by ',
+                                    labelWidth: 70,
+                                    multiSelect: true,
+                                    firstItemChecksAll: true
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    text: 'Search value',
+                                    todo: 'valueFilter',
+                                    width: 256,
+                                    tooltip: 'Value filter',
                                 }
                             ]
                         }
@@ -150,6 +195,6 @@ Ext.define('A.view.location.Regency', {
             ]
         });
 
-        this.callParent(arguments)
+        this.callParent(arguments);
     }
 });
