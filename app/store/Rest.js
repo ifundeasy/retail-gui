@@ -1,8 +1,10 @@
 Ext.define('A.store.Rest', {
     extend: 'Ext.data.Store',
     sortOnLoad: true,
-    remoteSort: true,
     sortOnFilter: true,
+    remoteSort: true,
+    remoteGroup: true,
+    remoteFilter: true,
     proxy: {
         type: 'ajax',
         headers: {
@@ -29,6 +31,12 @@ Ext.define('A.store.Rest', {
                 let err = Ext.JSON.decode(res.responseText);
                 this.errors = this.errors || [];
                 this.errors.push(err);
+                Ext.Msg.show({
+                    title: 'Error',
+                    msg: err.trace,
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.Msg.ERROR
+                });
                 console.error(err.trace);
             }
         }
