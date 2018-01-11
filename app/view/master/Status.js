@@ -1,5 +1,7 @@
 Ext.require([
-    'A.store.Status'
+    'A.ux.CheckboxListCombo',
+    'A.store.Status',
+    'A.store.KeyValue'
 ]);
 Ext.define('A.view.master.Status', {
     extend: 'Ext.panel.Panel',
@@ -24,14 +26,12 @@ Ext.define('A.view.master.Status', {
                         {
                             text: 'Name',
                             dataIndex: 'name',
-                            autoSizeColumn: true,
                             minWidth: 100,
+                            autoSizeColumn: true,
                             editor: {xtype: 'textfield'}
                         },
                         {
-                            text: 'Notes',
-                            dataIndex: 'notes',
-                            flex: 1,
+                            text: 'Notes', dataIndex: 'notes', flex: 1,
                             editor: {xtype: 'textfield'}
                         },
                         {
@@ -95,7 +95,6 @@ Ext.define('A.view.master.Status', {
                                     todo: 'add',
                                     tooltip: 'Add new',
                                 },
-                                '->',
                                 {
                                     xtype: 'button',
                                     icon: 'img/icons/essential/png/trash.png',
@@ -111,6 +110,24 @@ Ext.define('A.view.master.Status', {
                                     text: 'Save',
                                     todo: 'save',
                                     tooltip: 'Save selection',
+                                },
+                                '->',
+                                {
+                                    xtype: 'checkboxlistcombo',
+                                    displayField: 'value',
+                                    valueField: 'key',
+                                    editable: false,
+                                    fieldLabel: 'Search by ',
+                                    labelWidth: 70,
+                                    multiSelect: true,
+                                    firstItemChecksAll: true
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    text: 'Search value',
+                                    todo: 'valueFilter',
+                                    width: 256,
+                                    tooltip: 'Value filter',
                                 }
                             ]
                         }
@@ -119,6 +136,6 @@ Ext.define('A.view.master.Status', {
             ]
         });
 
-        this.callParent(arguments)
+        this.callParent(arguments);
     }
 });
