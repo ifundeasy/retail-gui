@@ -2,11 +2,31 @@
 <head>
     <title></title>
     <link rel="stylesheet" type="text/css" href="sdk/ext/resources/css/ext-all-neptune.css">
+    <link rel="stylesheet" type="text/css" href="css/ext-ux-all.css">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script type="text/javascript" src="sdk/ext/ext-all-debug-w-comments.js"></script>
     <script type="text/javascript" src="sdk/ext/ext-theme-neptune.js"></script>
     <script type="text/javascript" src="sdk/jquery/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="app.js"></script>
+    <script>
+        window.stringy = function (p) {
+            return JSON.stringify(p)
+            .replace(/\[|\]/gi,'')
+            .replace(/\"/gi, "'")
+            .replace(/\,{/g, ',\n{')
+            .replace(/\:\'/g, ': \'')
+            .replace(/\'\,\'/g, '\', \'')
+            .replace(/\'name\'\:/g, 'name:')
+            .replace(/\'type\'\:/g, 'type:')
+        };
+        window.getRW = function (p) {
+            console.log(p);
+            console.log(stringy(A.app.backend.models[p].reader));
+            console.log('');
+            console.log(stringy(A.app.backend.models[p].writer));
+            console.log('-------------------------------------');
+        };
+    </script>
 </head>
 <body></body>
 </html>
