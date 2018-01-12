@@ -1,5 +1,4 @@
 Ext.require([
-    'A.ux.CheckboxListCombo',
     'A.store.National',
     'A.store.Status',
     'A.store.KeyValue'
@@ -66,12 +65,9 @@ Ext.define('A.view.location.National', {
                             minWidth: 100,
                             autoSizeColumn: true,
                             renderer: function (val, meta, record, rowIndex) {
-                                if (!record.dirty) return record.data.status_name;
-                                let idx = statusStore.findBy(function (rec) {
-                                    if (rec.data.id == val) return 1;
-                                    return 0
-                                });
-                                return statusStore.getAt(idx).get('name')
+                                if (!record.dirty) return record.data.status_name || '';
+                                let idx = statusStore.findExact('id', val);
+                                return (idx === -1) ? '' : statusStore.getAt(idx).get('name');
                             },
                             editor: {
                                 xtype: 'combobox',

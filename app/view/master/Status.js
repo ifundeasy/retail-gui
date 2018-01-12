@@ -1,5 +1,4 @@
 Ext.require([
-    'A.ux.CheckboxListCombo',
     'A.store.Status',
     'A.store.KeyValue'
 ]);

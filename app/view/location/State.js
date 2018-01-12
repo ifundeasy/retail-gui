@@ -1,5 +1,4 @@
 Ext.require([
-    'A.ux.CheckboxListCombo',
     'A.store.National',
     'A.store.State',
     'A.store.Status',
@@ -47,12 +46,9 @@ Ext.define('A.view.location.State', {
                             minWidth: 100,
                             autoSizeColumn: true,
                             renderer: function (val, meta, record, rowIndex) {
-                                if (!record.dirty) return record.data.national_name;
-                                let idx = nationalStore.findBy(function (rec) {
-                                    if (rec.data.id == val) return 1;
-                                    return 0
-                                });
-                                return nationalStore.getAt(idx).get('name')
+                                if (!record.dirty) return record.data.national_name || '';
+                                let idx = nationalStore.findExact('id', val);
+                                return (idx === -1) ? '' : nationalStore.getAt(idx).get('name');
                             },
                             editor: {
                                 xtype: 'combobox',
@@ -71,12 +67,9 @@ Ext.define('A.view.location.State', {
                             minWidth: 100,
                             autoSizeColumn: true,
                             renderer: function (val, meta, record, rowIndex) {
-                                if (!record.dirty) return record.data.status_name;
-                                let idx = statusStore.findBy(function (rec) {
-                                    if (rec.data.id == val) return 1;
-                                    return 0
-                                });
-                                return statusStore.getAt(idx).get('name')
+                                if (!record.dirty) return record.data.status_name || '';
+                                let idx = statusStore.findExact('id', val);
+                                return (idx === -1) ? '' : statusStore.getAt(idx).get('name');
                             },
                             editor: {
                                 xtype: 'combobox',
