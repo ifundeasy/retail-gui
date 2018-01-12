@@ -1,5 +1,9 @@
 Ext.define('A.controller.Core', {
     extend: 'Ext.app.Controller',
+    requires: [
+        'Ext.ux.form.CheckboxListCombo',
+        'A.other.ElementFix',
+    ],
     views: ['Content', 'Navigation', 'Login'],
     refs: [
         {ref: 'navView', selector: 'navigation'},
@@ -156,7 +160,7 @@ Ext.define('A.controller.Core', {
     },
     onKeyDown: function (cmp, event) {
         if (event.button === 12) {
-            let loginButton = cmp.up('loginView').down('button');
+            let loginButton = cmp.up('login').down('button');
             this.onClickLogin(loginButton);
         }
     },
