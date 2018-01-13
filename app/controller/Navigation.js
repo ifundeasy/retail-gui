@@ -1,10 +1,19 @@
+Ext.define('Search', {
+    fields: ['id', 'query'],
+    extend: 'Ext.data.Model',
+    proxy: {
+        type: 'localstorage',
+        id  : 'apan-seh'
+    }
+});
+var e = Ext.create('Search');
 Ext.require('A.store.Rest');
 Ext.define('A.controller.Navigation', {
     extend: 'Ext.app.Controller',
     views: ['Navigation'],
     refs: [
         {ref: 'navView', selector: 'navigation'},
-        {ref: 'mainView', selector: 'content'}
+        {ref: 'contentView', selector: 'content'}
     ],
     events: {
         'navigation': {
@@ -31,6 +40,7 @@ Ext.define('A.controller.Navigation', {
             node.text = node.name;
             node.expanded = true;
             if (node.class) {
+                //console.log(node)
                 let list = node.class.split('.');
                 let cls = list[list.length - 1];
                 cls = cls[0].toUpperCase() + cls.substr(1);
@@ -64,11 +74,16 @@ Ext.define('A.controller.Navigation', {
     onClickModule: function (treepanel, td, cellIndex, record, tr, rowIndex, e, eOpts) {
         let me = this;
         let manager = Ext.ClassManager;
-        let tabPanel = me.getMainView();
+        let tabPanel = me.getContentView();
         let controllerCls = record.raw.class;
-
+        //window.localStorage[moduleHistoryKey] = window.localStorage[moduleHistoryKey] || {};
         if (controllerCls) {
             let viewCls = controllerCls.replace('A.controller', 'A.view');
+            let listeners = {
+                close: function () {
+                    me.deleteHistory(viewCls, false)
+                }
+            };
             let callback = function () {
                 let exist = tabPanel.items.items.filter(function (e) {
                     return e.$className === viewCls
@@ -80,23 +95,59 @@ Ext.define('A.controller.Navigation', {
                         layout: 'fit',
                         closable: true,
                         border: true,
-                        treePanel: {el: treepanel, record}
+                        treePanel: {el: treepanel, record},
+                        listeners
                     });
                     tabPanel.add(exist);
                 }
                 tabPanel.setActiveTab(exist);
                 tabPanel.doLayout();
+                me.writeHistory(viewCls, record.data.id)
             };
             if (!manager.isCreated(controllerCls)) {
                 me.application.addController(controllerCls, {callback});
             } else callback();
         }
     },
-    init: function () {
+    readHistory: function (name) {
+        let me = this;
+        let key = me.historyKey;
+        try {
+            me.histories = JSON.parse(localStorage[key]);
+        } catch (e) {
+            me.histories = {};
+        }
+        return name ? me.histories[name] : me.histories;
+    },
+    writeHistory: function (name, value) {
+        let me = this;
+        let key = me.historyKey;
+        let history = me.readHistory();
+        history[name] = value;
+        localStorage[key] = JSON.stringify(history);
+    },
+    deleteHistory: function (name) {
+        let me = this;
+        let key = me.historyKey;
+        let history = me.readHistory();
+        delete history[name];
+        localStorage[key] = JSON.stringify(history);
+    },
+    setModules: function () {
         let me = this;
         let modules = me.loadModule();
+        let history = me.readHistory();
 
         me.getNavView().setRootNode(modules);
+
+        for (let viewCls in history) {
+            let value = history[viewCls];
+            let node = me.getNavView().getStore().getById(value);
+            this.onClickModule(me.getNavView(), 0, 0, node);
+        }
+    },
+    init: function () {
+        let me = this;
 
         for (let query in me.events) {
             let events = me.events[query];
@@ -106,7 +157,9 @@ Ext.define('A.controller.Navigation', {
                 else delete events[e]
             }
         }
-
         me.control(me.events);
-    }
+        me.historyKey = me.application.backend.storageKey + '-modules';
+
+        me.setModules();
+    },
 });
