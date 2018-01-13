@@ -10,5 +10,10 @@ Ext.define('A.view.Navigation', {
     collapsible: true,
     layout: 'fit',
     bodyBorder: true,
-    border: true
+    border: true,
+    autoScroll: true,
+    rootVisible: false,
+    animate: true,
+    icon: 'img/icons/essential/png/unlocked-2.png',
+    iconCls: 'icon-bg',
 });
