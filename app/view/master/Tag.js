@@ -42,14 +42,12 @@ Ext.define('A.view.master.Tag', {
                                 return (idx === -1) ? '' : parentStore.getAt(idx).get('name');
                             },
                             editor: {
-                                xtype: 'combobox',
-                                store: parentStore,
-                                autoScroll: true,
-                                autoShow: true,
-                                forceSelection: true,
-                                queryMode: 'remote',
+                                xtype: 'suggestbox',
                                 displayField: 'name',
-                                valueField: 'id'
+                                valueField: 'id',
+                                pageSize: 20,
+                                growMin: 323,
+                                store: parentStore
                             }
                         },
                         {
@@ -63,14 +61,11 @@ Ext.define('A.view.master.Tag', {
                                 return (idx === -1) ? '' : statusStore.getAt(idx).get('name');
                             },
                             editor: {
-                                xtype: 'combobox',
-                                store: statusStore,
-                                autoScroll: true,
-                                autoShow: true,
-                                forceSelection: true,
-                                queryMode: 'remote',
+                                xtype: 'suggestbox',
                                 displayField: 'name',
-                                valueField: 'id'
+                                valueField: 'id',
+                                editable: false,
+                                store: statusStore
                             }
                         },
                         {

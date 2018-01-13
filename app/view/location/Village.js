@@ -51,14 +51,12 @@ Ext.define('A.view.location.Village', {
                                 return (idx === -1) ? '' : districtStore.getAt(idx).get('name');
                             },
                             editor: {
-                                xtype: 'combobox',
-                                store: districtStore,
-                                autoScroll: true,
-                                autoShow: true,
-                                forceSelection: true,
-                                queryMode: 'remote',
+                                xtype: 'suggestbox',
                                 displayField: 'name',
-                                valueField: 'id'
+                                valueField: 'id',
+                                growMin: 323,
+                                pageSize: 20,
+                                store: districtStore
                             }
                         },
                         {
@@ -72,14 +70,11 @@ Ext.define('A.view.location.Village', {
                                 return (idx === -1) ? '' : statusStore.getAt(idx).get('name');
                             },
                             editor: {
-                                xtype: 'combobox',
-                                store: statusStore,
-                                autoScroll: true,
-                                autoShow: true,
-                                forceSelection: true,
-                                queryMode: 'remote',
+                                xtype: 'suggestbox',
                                 displayField: 'name',
-                                valueField: 'id'
+                                valueField: 'id',
+                                editable: false,
+                                store: statusStore
                             }
                         },
                         {

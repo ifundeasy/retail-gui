@@ -51,14 +51,12 @@ Ext.define('A.view.location.District', {
                                 return (idx === -1) ? '' : regencyStore.getAt(idx).get('name');
                             },
                             editor: {
-                                xtype: 'combobox',
-                                store: regencyStore,
-                                autoScroll: true,
-                                autoShow: true,
-                                forceSelection: true,
-                                queryMode: 'remote',
+                                xtype: 'suggestbox',
                                 displayField: 'name',
-                                valueField: 'id'
+                                valueField: 'id',
+                                growMin: 323,
+                                pageSize: 20,
+                                store: regencyStore
                             }
                         },
                         {
@@ -72,14 +70,11 @@ Ext.define('A.view.location.District', {
                                 return (idx === -1) ? '' : statusStore.getAt(idx).get('name');
                             },
                             editor: {
-                                xtype: 'combobox',
-                                store: statusStore,
-                                autoScroll: true,
-                                autoShow: true,
-                                forceSelection: true,
-                                queryMode: 'remote',
+                                xtype: 'suggestbox',
                                 displayField: 'name',
-                                valueField: 'id'
+                                valueField: 'id',
+                                editable: false,
+                                store: statusStore
                             }
                         },
                         {

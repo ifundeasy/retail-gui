@@ -70,14 +70,11 @@ Ext.define('A.view.location.National', {
                                 return (idx === -1) ? '' : statusStore.getAt(idx).get('name');
                             },
                             editor: {
-                                xtype: 'combobox',
-                                store: statusStore,
-                                autoScroll: true,
-                                autoShow: true,
-                                forceSelection: true,
-                                queryMode: 'remote',
+                                xtype: 'suggestbox',
                                 displayField: 'name',
-                                valueField: 'id'
+                                valueField: 'id',
+                                editable: false,
+                                store: statusStore
                             }
                         },
                         {

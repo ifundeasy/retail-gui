@@ -51,14 +51,12 @@ Ext.define('A.view.location.Regency', {
                                 return (idx === -1) ? '' : stateStore.getAt(idx).get('name');
                             },
                             editor: {
-                                xtype: 'combobox',
-                                store: stateStore,
-                                autoScroll: true,
-                                autoShow: true,
-                                forceSelection: true,
-                                queryMode: 'remote',
+                                xtype: 'suggestbox',
                                 displayField: 'name',
-                                valueField: 'id'
+                                valueField: 'id',
+                                growMin: 323,
+                                pageSize: 20,
+                                store: stateStore
                             }
                         },
                         {
@@ -72,14 +70,11 @@ Ext.define('A.view.location.Regency', {
                                 return (idx === -1) ? '' : statusStore.getAt(idx).get('name');
                             },
                             editor: {
-                                xtype: 'combobox',
-                                store: statusStore,
-                                autoScroll: true,
-                                autoShow: true,
-                                forceSelection: true,
-                                queryMode: 'remote',
+                                xtype: 'suggestbox',
                                 displayField: 'name',
-                                valueField: 'id'
+                                valueField: 'id',
+                                editable: false,
+                                store: statusStore
                             }
                         },
                         {
