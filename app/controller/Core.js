@@ -3,6 +3,7 @@ Ext.define('A.controller.Core', {
     requires: [
         'Ext.ux.form.CheckboxListCombo',
         'A.other.ElementFix',
+        'A.other.SuggestBox'
     ],
     views: ['Content', 'Navigation', 'Login'],
     refs: [
