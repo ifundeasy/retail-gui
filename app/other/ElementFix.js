@@ -3,7 +3,7 @@ Ext.define('A.other.ElementFix', {
     syncContent: function(source) {
         source = Ext.getDom(source);
 
-        if (!source) return;
+        //if (!source) return;
         var me = this,
             sourceNodes = source.childNodes,
             sourceLen = sourceNodes.length,
