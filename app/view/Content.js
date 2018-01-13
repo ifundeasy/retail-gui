@@ -9,13 +9,5 @@ Ext.define('A.view.Content', {
             let element = Ext.query('#' + elm.tabBar.id + ' div[id$=innerCt]')[0];
             element.style.backgroundColor = '#f7f7f7';
         }
-    },
-    items: [
-        {
-            xtype: 'panel',
-            closable: true,
-            border: true,
-            title: 'Welcome'
-        }
-    ]
+    }
 });
