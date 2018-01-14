@@ -33,13 +33,18 @@ Ext.define('A.other.SuggestBox', {
             let store = cmp.getStore();
             let key1 = this.displayField;
             let key2 = this.valueField;
+
             this.secondTime = true;
             store.on('beforeload', function(store, eOpts){
-                let {filter} = eOpts.params;
-                eOpts.params.filter = JSON.stringify({$or: [
-                    {[key1]: {$like : `%${filter}%`}},
-                    {[key2]: {$like : `%${filter}%`}}
-                ]});
+                let params = eOpts.params || {};
+                let value = params.filter;
+                if (!value) delete eOpts.params.filter;
+                else {
+                    eOpts.params.filter = JSON.stringify({$or: [
+                        {[key1]: {$like : `%${value}%`}},
+                        {[key2]: {$like : `%${value}%`}}
+                    ]});
+                }
             });
         }
     }

@@ -79,11 +79,16 @@ Ext.define('A.store.Rest', {
         }
     },
     listeners: {
-        beforeload: function () {
+        beforeload: function (store, eOpts) {
+            eOpts.params = eOpts.params || {};
+
             let {backend} = A.app;
             let url = backend.origin + '/api/';
+
             this.proxy.headers['X-Token'] = window.localStorage[backend.storageKey];
             this.proxy.url = url + this.model.prototype.pathURL;
+
+            if (!eOpts.params.filter) delete eOpts.params.filter
         },
         beforesync: function (options, eOpts) {
             let {backend} = A.app;
