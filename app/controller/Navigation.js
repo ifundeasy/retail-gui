@@ -38,9 +38,8 @@ Ext.define('A.controller.Navigation', {
                 return 0
             });
             node.text = node.name;
-            node.expanded = true;
+            node.expanded = node.collapsed === '1' ? false : true;
             if (node.class) {
-                //console.log(node)
                 let list = node.class.split('.');
                 let cls = list[list.length - 1];
                 cls = cls[0].toUpperCase() + cls.substr(1);
