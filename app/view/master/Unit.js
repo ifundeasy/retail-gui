@@ -28,7 +28,7 @@ Ext.define('A.view.master.Unit', {
                             dataIndex: 'short',
                             minWidth: 100,
                             autoSizeColumn: true,
-                            editor: {xtype: 'textfield', minValue:1}
+                            editor: {xtype: 'textfield'}
                         },
                         {
                             text: 'Name',

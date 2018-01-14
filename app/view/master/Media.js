@@ -32,19 +32,16 @@ Ext.define('A.view.master.Media', {
                             editor: {xtype: 'textfield'}
                         },
                         {
-                            text: 'Table',
+                            text: 'TABLENAME',
                             dataIndex: 'TABLENAME',
-                            minWidth: 100,
+                            minWidth: 120,
                             autoSizeColumn: true,
                             editor: {
-                                xtype: 'combobox',
+                                xtype: 'suggestbox',
                                 store: Ext.create('A.store.Table'),
-                                autoScroll: true,
-                                autoShow: true,
-                                forceSelection: true,
-                                queryMode: 'remote',
                                 displayField: 'name',
-                                valueField: 'name'
+                                valueField: 'name',
+                                growMin: 323
                             }
                         },
                         {
