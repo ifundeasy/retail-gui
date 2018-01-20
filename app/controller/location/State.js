@@ -139,16 +139,16 @@ Ext.define('A.controller.location.State', {
     saveRows: function (cmp) {
         let grid = this.getMyGrid();
         let store = grid.getStore();
-        let msg = [], op = { create: 0, delete: 0, update: 0 };
+        let msg = [], op = {create: 0, delete: 0, update: 0};
         let total = store.removed.length;
         op.delete += store.removed.length;
         store.each(function (rec) {
             if (!rec.raw.id) {
                 op.create += 1;
-                total +=1;
+                total += 1;
             }
             if (rec.raw.id && rec.dirty) {
-                total +=1;
+                total += 1;
                 op.update += 1;
             }
         });

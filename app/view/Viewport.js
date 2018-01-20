@@ -23,7 +23,7 @@ Ext.define('A.view.Viewport', {
                                     xtype: 'toolbar',
                                     dock: 'top',
                                     style: {
-                                        'backgroundColor' : '#197fcc'
+                                        'backgroundColor': '#197fcc'
                                     },
                                     items: [
                                         {

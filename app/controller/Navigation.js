@@ -3,7 +3,7 @@ Ext.define('Search', {
     extend: 'Ext.data.Model',
     proxy: {
         type: 'localstorage',
-        id  : 'apan-seh'
+        id: 'apan-seh'
     }
 });
 var e = Ext.create('Search');

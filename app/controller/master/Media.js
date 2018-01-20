@@ -139,7 +139,7 @@ Ext.define('A.controller.master.Media', {
     saveRows: function (cmp) {
         let grid = this.getMyGrid();
         let store = grid.getStore();
-        let msg = [], op = { create: 0, delete: 0, update: 0 };
+        let msg = [], op = {create: 0, delete: 0, update: 0};
         op.delete += store.removed.length;
         store.each(function (rec) {
             if (!rec.raw.id) op.create += 1;

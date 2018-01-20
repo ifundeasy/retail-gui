@@ -27,7 +27,7 @@ Ext.define('A.store.Rest', {
             root: 'data'
         },
         listeners: {
-            exception: function(proxy, res) {
+            exception: function (proxy, res) {
                 let err = Ext.JSON.decode(res.responseText);
                 this.errors = this.errors || [];
                 this.errors.push(err);
@@ -72,7 +72,7 @@ Ext.define('A.store.Rest', {
             return await helper();
         } catch (e) {
             let errs = e.scope.errors;
-            let err = errs[errs.length-1];
+            let err = errs[errs.length - 1];
             let error = new Error(err.trace);
             error.objective = e;
             return error;

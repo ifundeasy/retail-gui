@@ -1,6 +1,6 @@
 Ext.define('A.other.ElementFix', {
     override: 'Ext.Element',
-    syncContent: function(source) {
+    syncContent: function (source) {
         source = Ext.getDom(source);
 
         //if (!source) return;
@@ -10,7 +10,7 @@ Ext.define('A.other.ElementFix', {
             dest = me.dom,
             destNodes = dest.childNodes,
             destLen = destNodes.length,
-            i,  destNode, sourceNode,
+            i, destNode, sourceNode,
             nodeType, newAttrs, attLen, attName;
 
         newAttrs = source.attributes;

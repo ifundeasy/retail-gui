@@ -86,7 +86,7 @@ Ext.define('A.controller.Core', {
             'double': 'float'
         };
         let getType = function (str) {
-            return Object.keys(types).filter(function(type){
+            return Object.keys(types).filter(function (type) {
                 if (str.indexOf(type) === 0) return 1;
                 return 0;
             })[0]

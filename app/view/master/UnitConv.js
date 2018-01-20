@@ -30,7 +30,7 @@ Ext.define('A.view.master.UnitConv', {
                             dataIndex: 'base_id',
                             minWidth: 100,
                             autoSizeColumn: true,
-                            renderer: function(val, meta, record, rowIndex) {
+                            renderer: function (val, meta, record, rowIndex) {
                                 let idx = parentStore.findExact('id', val);
                                 return (idx === -1) ? '' : parentStore.getAt(idx).get('name');
                             },
@@ -52,7 +52,7 @@ Ext.define('A.view.master.UnitConv', {
                             dataIndex: 'unit_id',
                             minWidth: 100,
                             autoSizeColumn: true,
-                            renderer: function(val, meta, record, rowIndex) {
+                            renderer: function (val, meta, record, rowIndex) {
                                 let idx = parentStore.findExact('id', val);
                                 return (idx === -1) ? '' : parentStore.getAt(idx).get('name');
                             },
@@ -70,7 +70,7 @@ Ext.define('A.view.master.UnitConv', {
                             dataIndex: 'status_id',
                             minWidth: 100,
                             autoSizeColumn: true,
-                            renderer: function(val, meta, record, rowIndex) {
+                            renderer: function (val, meta, record, rowIndex) {
                                 if (!record.dirty) return record.data.status_name || '';
                                 let idx = statusStore.findExact('id', val);
                                 return (idx === -1) ? '' : statusStore.getAt(idx).get('name');
