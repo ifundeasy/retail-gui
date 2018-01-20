@@ -4,8 +4,9 @@ Ext.define('A.model.Media', {
     fields: [
         {name: 'id', type: 'int'},
         {name: 'name', type: 'string'},
-        {name: "TABLENAME", type: "string"},
-        {name: "TABLENAME_id", type: "int"},
+        {name: 'TABLENAME', type: 'string'},
+        {name: 'TABLENAME_id', type: 'int'},
+        {name: 'location', type: 'string'},
         {name: 'status_id', type: 'int'},
         {name: 'status_name', type: 'string'},
         {name: 'status_notes', type: 'string'},
@@ -21,8 +22,8 @@ Ext.define('A.model.Media', {
     writer: [
         {name: 'id', type: 'int'},
         {name: 'name', type: 'string'},
-        {name: "TABLENAME", type: "string"},
-        {name: "TABLENAME_id", type: "int"},
+        {name: 'TABLENAME', type: 'string'},
+        {name: 'TABLENAME_id', type: 'int'},
         {name: 'status_id', type: 'int'},
         {name: 'notes', type: 'string'}
     ]
