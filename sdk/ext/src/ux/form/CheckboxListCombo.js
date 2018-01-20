@@ -48,9 +48,9 @@ Ext.define('Ext.ux.form.CheckboxListCombo', {
     listConfig: {
         getInnerTpl: function (displayField) {
             return '<tpl for="."><div><img src="' + Ext.BLANK_IMAGE_URL + '" ' + 'class="ux-checkboxlistcombo-icon">{' + (displayField || 'text') + ':htmlEncode}</div></tpl>';
-        }
+        },
         // from here down it's all about the first item checking/unchecking all others
-        , previousAllChecked: false,
+        previousAllChecked: false,
         previousCheckCount: 0,
         listeners: {
             select: function (me, rec) {
@@ -143,5 +143,5 @@ Ext.define('Ext.ux.form.CheckboxListCombo', {
                 }
             }
         }
-    },
+    }
 });
