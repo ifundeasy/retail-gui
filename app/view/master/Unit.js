@@ -1,13 +1,13 @@
 Ext.require([
-    'A.store.Unit',
-    'A.store.Status'
+    'A.model.Unit',
+    'A.model.Status'
 ]);
 Ext.define('A.view.master.Unit', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterUnit',
     initComponent: function () {
-        let store = Ext.create('A.store.Unit');
-        let statusStore = Ext.create('A.store.Status');
+        let store = Ext.create('A.store.Rest', {model: 'A.model.Unit'});
+        let statusStore = Ext.create('A.store.Rest', {model: 'A.model.Status'});
 
         Ext.apply(this, {
             items: [

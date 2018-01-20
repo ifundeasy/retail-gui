@@ -1,16 +1,16 @@
 Ext.require([
-    'A.store.State',
-    'A.store.Regency',
-    'A.store.Status',
+    'A.model.State',
+    'A.model.Regency',
+    'A.model.Status',
     'A.store.KeyValue'
 ]);
 Ext.define('A.view.location.Regency', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterRegency',
     initComponent: function () {
-        let store = Ext.create('A.store.Regency');
-        let statusStore = Ext.create('A.store.Status');
-        let stateStore = Ext.create('A.store.State');
+        let store = Ext.create('A.store.Rest', {model: 'A.model.Regency'});
+        let statusStore = Ext.create('A.store.Rest', {model: 'A.model.Status'});
+        let stateStore = Ext.create('A.store.Rest', {model: 'A.model.State'});
 
         Ext.apply(this, {
             items: [

@@ -1,15 +1,15 @@
 Ext.require([
-    'A.store.Discount',
-    'A.store.Status',
+    'A.model.Discount',
+    'A.model.Status',
     'A.store.YesNo',
 ]);
 Ext.define('A.view.master.Discount', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterDiscount',
     initComponent: function () {
-        let store = Ext.create('A.store.Discount');
+        let store = Ext.create('A.store.Rest', {model: 'A.model.Discount'});
+        let statusStore = Ext.create('A.store.Rest', {model: 'A.model.Status'});
         let ynStore = Ext.create('A.store.YesNo');
-        let statusStore = Ext.create('A.store.Status');
 
         Ext.apply(this, {
             items: [

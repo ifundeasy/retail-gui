@@ -1,16 +1,16 @@
 Ext.require([
-    'A.store.District',
-    'A.store.Village',
-    'A.store.Status',
+    'A.model.District',
+    'A.model.Village',
+    'A.model.Status',
     'A.store.KeyValue'
 ]);
 Ext.define('A.view.location.Village', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterVillage',
     initComponent: function () {
-        let store = Ext.create('A.store.Village');
-        let statusStore = Ext.create('A.store.Status');
-        let districtStore = Ext.create('A.store.District');
+        let store = Ext.create('A.store.Rest', {model: 'A.model.Village'});
+        let statusStore = Ext.create('A.store.Rest', {model: 'A.model.Status'});
+        let districtStore = Ext.create('A.store.Rest', {model: 'A.model.District'});
 
         Ext.apply(this, {
             items: [

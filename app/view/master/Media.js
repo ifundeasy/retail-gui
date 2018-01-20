@@ -1,14 +1,14 @@
 Ext.require([
-    'A.store.Media',
-    'A.store.Status',
+    'A.model.Media',
+    'A.model.Status',
     'A.store.Table'
 ]);
 Ext.define('A.view.master.Media', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterMedia',
     initComponent: function () {
-        let store = Ext.create('A.store.Media');
-        let statusStore = Ext.create('A.store.Status');
+        let store = Ext.create('A.store.Rest', {model: 'A.model.Media'});
+        let statusStore = Ext.create('A.store.Rest', {model: 'A.model.Status'});
 
         Ext.apply(this, {
             items: [

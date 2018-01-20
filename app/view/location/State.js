@@ -1,16 +1,16 @@
 Ext.require([
-    'A.store.National',
-    'A.store.State',
-    'A.store.Status',
+    'A.model.National',
+    'A.model.State',
+    'A.model.Status',
     'A.store.KeyValue'
 ]);
 Ext.define('A.view.location.State', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterState',
     initComponent: function () {
-        let store = Ext.create('A.store.State');
-        let statusStore = Ext.create('A.store.Status');
-        let nationalStore = Ext.create('A.store.National');
+        let store = Ext.create('A.store.Rest', {model: 'A.model.State'});
+        let statusStore = Ext.create('A.store.Rest', {model: 'A.model.Status'});
+        let nationalStore = Ext.create('A.store.Rest', {model: 'A.model.National'});
 
         Ext.apply(this, {
             items: [

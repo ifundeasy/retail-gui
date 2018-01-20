@@ -1,14 +1,14 @@
 Ext.require([
-    'A.store.Tag',
-    'A.store.Status'
+    'A.model.Tag',
+    'A.model.Status'
 ]);
 Ext.define('A.view.master.Tag', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterTag',
     initComponent: function () {
-        let store = Ext.create('A.store.Tag');
-        let parentStore = Ext.create('A.store.Tag');
-        let statusStore = Ext.create('A.store.Status');
+        let store = Ext.create('A.store.Rest', {model: 'A.model.Tag'});
+        let parentStore = Ext.create('A.store.Rest', {model: 'A.model.Tag'});
+        let statusStore = Ext.create('A.store.Rest', {model: 'A.model.Status'});
 
         Ext.apply(this, {
             items: [

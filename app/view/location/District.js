@@ -1,16 +1,16 @@
 Ext.require([
-    'A.store.Regency',
-    'A.store.District',
-    'A.store.Status',
+    'A.model.Regency',
+    'A.model.District',
+    'A.model.Status',
     'A.store.KeyValue'
 ]);
 Ext.define('A.view.location.District', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterDistrict',
     initComponent: function () {
-        let store = Ext.create('A.store.District');
-        let statusStore = Ext.create('A.store.Status');
-        let regencyStore = Ext.create('A.store.Regency');
+        let store = Ext.create('A.store.Rest', {model: 'A.model.District'});
+        let statusStore = Ext.create('A.store.Rest', {model: 'A.model.Status'});
+        let regencyStore = Ext.create('A.store.Rest', {model: 'A.model.Regency'});
 
         Ext.apply(this, {
             items: [

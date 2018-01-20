@@ -1,13 +1,13 @@
 Ext.require([
-    'A.store.PayMethod',
-    'A.store.Status'
+    'A.model.PayMethod',
+    'A.model.Status'
 ]);
 Ext.define('A.view.master.Paymethod', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterPaymethod',
     initComponent: function () {
-        let store = Ext.create('A.store.PayMethod');
-        let statusStore = Ext.create('A.store.Status');
+        let store = Ext.create('A.store.Rest', {model: 'A.model.PayMethod'});
+        let statusStore = Ext.create('A.store.Rest', {model: 'A.model.Status'});
 
         Ext.apply(this, {
             items: [

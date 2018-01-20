@@ -1,12 +1,12 @@
 Ext.require([
-    'A.store.Status',
+    'A.model.Status',
     'A.store.KeyValue'
 ]);
 Ext.define('A.view.master.Status', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterStatus',
     initComponent: function () {
-        let store = Ext.create('A.store.Status');
+        let store = Ext.create('A.store.Rest', {model: 'A.model.Status'});
 
         Ext.apply(this, {
             items: [

@@ -1,15 +1,15 @@
 Ext.require([
-    'A.store.Tax',
-    'A.store.Status',
+    'A.model.Tax',
+    'A.model.Status',
     'A.store.YesNo',
 ]);
 Ext.define('A.view.master.Taxes', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterTaxes',
     initComponent: function () {
-        let store = Ext.create('A.store.Tax');
+        let store = Ext.create('A.store.Rest', {model: 'A.model.Tax'});
+        let statusStore = Ext.create('A.store.Rest', {model: 'A.model.Status'});
         let ynStore = Ext.create('A.store.YesNo');
-        let statusStore = Ext.create('A.store.Status');
 
         Ext.apply(this, {
             items: [

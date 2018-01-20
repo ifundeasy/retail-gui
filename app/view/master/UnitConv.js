@@ -1,15 +1,15 @@
 Ext.require([
-    'A.store.Unit',
-    'A.store.UnitConv',
-    'A.store.Status'
+    'A.model.Unit',
+    'A.model.UnitConv',
+    'A.model.Status'
 ]);
 Ext.define('A.view.master.UnitConv', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterUnitConv',
     initComponent: function () {
-        let store = Ext.create('A.store.UnitConv');
-        let parentStore = Ext.create('A.store.Unit');
-        let statusStore = Ext.create('A.store.Status');
+        let store = Ext.create('A.store.Rest', {model: 'A.model.UnitConv'});
+        let parentStore = Ext.create('A.store.Rest', {model: 'A.model.Unit'});
+        let statusStore = Ext.create('A.store.Rest', {model: 'A.model.Status'});
 
         Ext.apply(this, {
             items: [
