@@ -47,7 +47,6 @@ Ext.define('A.view.master.Tag', {
                                 valueField: 'id',
                                 pageSize: 20,
                                 growMin: 323,
-                                queryMode: 'local',
                                 store: parentStore
                             }
                         },
