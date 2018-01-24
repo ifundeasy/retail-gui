@@ -137,34 +137,44 @@ Ext.define('A.controller.master.Product', {
         }
     },
     saveRows: function (cmp) {
+        let total = 0;
         let grid = this.getMyGrid();
         let store = grid.getStore();
         let msg = [], op = {create: 0, delete: 0, update: 0};
+
         op.delete += store.removed.length;
         store.each(function (rec) {
             if (!rec.raw.id) op.create += 1;
             if (rec.raw.id && rec.dirty) op.update += 1;
         });
-        for (let o in op) if (op[o]) msg.push(o + ' ' + op[o] + ' items');
-        Ext.Msg.show({
-            title: 'Confirm',
-            msg: 'Operation such : ' + msg.join(', ') + ' will be save.<br/>Confirm for saving operation.',
-            buttons: Ext.MessageBox.YESNO,
-            closeable: false,
-            icon: Ext.Msg.QUESTION,
-            animateTarget: cmp,
-            fn: async function (choose) {
-                if (choose === 'yes') {
-                    let mySync = await store.Sync();
-                    if (mySync instanceof Error) {
-                        console.log(mySync)
-                    } else {
-                        console.log('SUCCESS', mySync);
-                        await store.Load();
+        for (let o in op) {
+            if (op[o]) {
+                total += 1;
+                msg.push(o + ' ' + op[o] + ' items');
+            }
+        }
+
+        if (total) {
+            Ext.Msg.show({
+                title: 'Confirm',
+                msg: 'Operation such : ' + msg.join(', ') + ' will be save.<br/>Confirm for saving operation.',
+                buttons: Ext.MessageBox.YESNO,
+                closeable: false,
+                icon: Ext.Msg.QUESTION,
+                animateTarget: cmp,
+                fn: async function (choose) {
+                    if (choose === 'yes') {
+                        let mySync = await store.Sync();
+                        if (mySync instanceof Error) {
+                            console.log(mySync)
+                        } else {
+                            console.log('SUCCESS', mySync);
+                            await store.Load();
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     },
     deselectRow: function (model, record, index) {
         console.log('masterProduct deselectRow')

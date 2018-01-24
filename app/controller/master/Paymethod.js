@@ -140,23 +140,24 @@ Ext.define('A.controller.master.Paymethod', {
         console.log('masterPaymethod deselectRow')
     },
     saveRows: function (cmp) {
+        let total = 0;
         let grid = this.getMyGrid();
         let store = grid.getStore();
         let msg = [], op = {create: 0, delete: 0, update: 0};
-        let total = store.removed.length;
+
         op.delete += store.removed.length;
         store.each(function (rec) {
-            if (!rec.raw.id) {
-                op.create += 1;
-                total += 1;
-            }
-            if (rec.raw.id && rec.dirty) {
-                total += 1;
-                op.update += 1;
-            }
+            if (!rec.raw.id) op.create += 1;
+            if (rec.raw.id && rec.dirty) op.update += 1;
         });
+        for (let o in op) {
+            if (op[o]) {
+                total += 1;
+                msg.push(o + ' ' + op[o] + ' items');
+            }
+        }
+
         if (total) {
-            for (let o in op) if (op[o]) msg.push(o + ' ' + op[o] + ' items');
             Ext.Msg.show({
                 title: 'Confirm',
                 msg: 'Operation such : ' + msg.join(', ') + ' will be save.<br/>Confirm for saving operation.',
