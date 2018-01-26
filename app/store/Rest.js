@@ -41,8 +41,9 @@ Ext.define('A.store.Rest', {
             }
         }
     },
-    Load: function () {
+    Load: function (extraParams) {
         let self = this;
+        self.proxy.extraParams = extraParams ? extraParams : '';
         return new Promise(function (resolve, reject) {
             self.load({
                 scope: self,
@@ -83,7 +84,7 @@ Ext.define('A.store.Rest', {
             eOpts.params = eOpts.params || {};
 
             let {backend} = A.app;
-            let url = backend.origin + '/api/';
+            let url = backend.origin;
 
             this.proxy.headers['X-Token'] = window.localStorage[backend.storageKey];
             this.proxy.url = url + this.model.prototype.pathURL;
