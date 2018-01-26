@@ -1,6 +1,6 @@
 Ext.define('A.model.UnitConv', {
     extend: 'Ext.data.Model',
-    pathURL: 'unitConvertion',
+    pathURL: '/api/unitConvertion',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'base_id', type: 'int'},

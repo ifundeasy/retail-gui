@@ -1,6 +1,6 @@
 Ext.define('A.model.Status', {
     extend: 'Ext.data.Module',
-    pathURL: 'module',
+    pathURL: '/api/module',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'module_id', type: 'int'},

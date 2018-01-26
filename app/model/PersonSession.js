@@ -1,6 +1,6 @@
 Ext.define('A.model.PersonSession', {
     extend: 'Ext.data.Model',
-    pathURL: 'personSession',
+    pathURL: '/api/personSession',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'value', type: 'string'},

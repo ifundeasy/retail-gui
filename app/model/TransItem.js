@@ -1,6 +1,6 @@
 Ext.define('A.model.TransItem', {
     extend: 'Ext.data.Model',
-    pathURL: 'transItem',
+    pathURL: '/api/transItem',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'trans_id', type: 'int'},

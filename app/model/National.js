@@ -1,6 +1,6 @@
 Ext.define('A.model.National', {
     extend: 'Ext.data.Model',
-    pathURL: 'national',
+    pathURL: '/api/national',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'iso2', type: 'string'},

@@ -1,6 +1,6 @@
 Ext.define('A.model.ActorModule', {
     extend: 'Ext.data.Model',
-    pathURL: 'actorModule',
+    pathURL: '/api/actorModule',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'actor_id', type: 'int'},

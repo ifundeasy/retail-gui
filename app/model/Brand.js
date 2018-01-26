@@ -1,6 +1,6 @@
 Ext.define('A.model.Brand', {
     extend: 'Ext.data.Model',
-    pathURL: 'brand',
+    pathURL: '/api/brand',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'name', type: 'string'},

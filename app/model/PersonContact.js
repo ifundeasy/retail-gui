@@ -1,6 +1,6 @@
 Ext.define('A.model.PersonContact', {
     extend: 'Ext.data.Model',
-    pathURL: 'personContact',
+    pathURL: '/api/personContact',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'value', type: 'string'},

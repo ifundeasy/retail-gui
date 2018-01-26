@@ -1,6 +1,6 @@
 Ext.define('A.model.TransItemDisc', {
     extend: 'Ext.data.Model',
-    pathURL: 'transItemDisc',
+    pathURL: '/api/transItemDisc',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'transItem_id', type: 'int'},

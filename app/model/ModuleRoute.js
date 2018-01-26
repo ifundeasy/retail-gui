@@ -1,6 +1,6 @@
 Ext.define('A.model.ModuleRoute', {
     extend: 'Ext.data.Model',
-    pathURL: 'moduleRoute',
+    pathURL: '/api/moduleRoute',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'TABLENAME', type: 'string'},

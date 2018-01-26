@@ -1,6 +1,6 @@
 Ext.define('A.model.PayMethod', {
     extend: 'Ext.data.Model',
-    pathURL: 'paymethod',
+    pathURL: '/api/paymethod',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'name', type: 'string'},

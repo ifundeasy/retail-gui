@@ -1,6 +1,6 @@
 Ext.define('A.model.ProductPrice', {
     extend: 'Ext.data.Model',
-    pathURL: 'productPrice',
+    pathURL: '/api/productPrice',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'product_id', type: 'int'},

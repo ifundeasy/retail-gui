@@ -1,6 +1,6 @@
 Ext.define('A.model.HttpMethod', {
     extend: 'Ext.data.Model',
-    pathURL: 'httpmethod',
+    pathURL: '/api/httpmethod',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'name', type: 'string'},

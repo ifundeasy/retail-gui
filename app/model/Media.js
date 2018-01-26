@@ -1,6 +1,6 @@
 Ext.define('A.model.Media', {
     extend: 'Ext.data.Model',
-    pathURL: 'media',
+    pathURL: '/api/media',
     fields: [
         {name: 'id', type: 'int'},
         {name: 'name', type: 'string'},
