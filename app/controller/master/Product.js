@@ -53,14 +53,23 @@ Ext.define('A.controller.master.Product', {
         let fields = me.getMySearchField().getValue() || [];
         let value = me.getMySearchValue().getValue();
         let $or = [];
+        let eParams, filter = {};
 
+        try {
+            filter = JSON.parse(store.proxy.extraParams.filter);
+        } catch (e) {
+           //
+        }
         fields.forEach(function (el) {
             if (el !== -1) $or.push({[el]: {$like: `%${value}%`}})
         });
 
-        store.proxy.extraParams = value && $or.length ? {filter: JSON.stringify({$or})} : null;
+        if (value && $or.length) filter['$or'] = $or;
+        else delete filter['$or'];
 
-        await store.Load();
+        if (Object.keys(filter).length) eParams = {filter: JSON.stringify(filter)};
+
+        await store.Load(eParams);
         me.ready4Filter = true;
     },
     addedSearchField: function () {
@@ -185,9 +194,24 @@ Ext.define('A.controller.master.Product', {
     addedGrid: async function () {
         let me = this;
         let grid = me.getMyGrid();
+        let {Type} = grid.up().stores;
         let store = grid.getStore();
 
-        await store.Load();
+        await Type.Load({
+            filter: JSON.stringify({
+                name: {
+                    $or: [
+                        {$like: '%jual%'},
+                        {$like: '%sale%'}
+                    ]
+                }
+            })
+        });
+        await store.Load({
+            filter: JSON.stringify({
+                type_id: Type.getAt(0).get('id')
+            })
+        });
     },
     init: function () {
         let me = this;

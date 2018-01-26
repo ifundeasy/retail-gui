@@ -1,4 +1,5 @@
 Ext.require([
+    'A.model.Type',
     'A.model.Brand',
     'A.model.Product',
     'A.model.ProductCode',
@@ -6,12 +7,16 @@ Ext.require([
     'A.model.ProductPrice',
     'A.model.ProductPriceDisc',
     'A.model.ProductPriceTax',
-    'A.model.Status'
+    'A.model.Status',
+    //
+    'A.soap.Product'
 ]);
 Ext.define('A.view.master.Product', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterProduct',
+    stores: {},
     initComponent: function () {
+        let Type = Ext.create('A.store.Rest', {model: 'A.model.Type'});
         let Brand = Ext.create('A.store.Rest', {model: 'A.model.Brand'});
         let Parent = Ext.create('A.store.Rest', {model: 'A.model.Product'});
         let Product = Ext.create('A.store.Rest', {model: 'A.model.Product'});
@@ -21,6 +26,7 @@ Ext.define('A.view.master.Product', {
         let ProductPriceDisc = Ext.create('A.store.Rest', {model: 'A.model.ProductPriceDisc'});
         let ProductPriceTax = Ext.create('A.store.Rest', {model: 'A.model.ProductPriceTax'});
         let Status = Ext.create('A.store.Rest', {model: 'A.model.Status'});
+        let ProductInfo = Ext.create('A.store.Rest', {model: 'A.soap.Product'});
         //
         let columns = [
             //new Ext.grid.RowNumberer(),
@@ -29,66 +35,68 @@ Ext.define('A.view.master.Product', {
                 text: 'Name',
                 dataIndex: 'name',
                 minWidth: 100,
+                autoSizeColumn: true
+            },
+            {
+                text: 'Code',
+                dataIndex: 'productCode_code',
+                minWidth: 100,
+                autoSizeColumn: true
+            },
+            {
+                text: 'Sales Price',
+                dataIndex: 'productPrice_price',
+                xtype: 'numbercolumn',
+                format: ',0.00',
+                minWidth: 120,
                 autoSizeColumn: true,
-                editor: {xtype: 'textfield'}
+                align: 'right'
+            },
+            {
+                text: 'Unit',
+                dataIndex: 'unit_name',
+                minWidth: 100,
+                autoSizeColumn: true,
+                renderer: function (val, meta, record, rowIndex) {
+                    let value = val === 'NULL' ? null : val;
+                    let shortname = record.get('unit_shortname');
+                    if (value && shortname) return shortname + ' (' + value + ')';
+                    if (value && !shortname) return value;
+                    if (!value && shortname) return shortname;
+                }
+            },
+            {
+                text: 'Discounts',
+                dataIndex: 'productPriceDisc_value',
+                minWidth: 100,
+                autoSizeColumn: true
+            },
+            {
+                text: 'Taxes',
+                dataIndex: 'productPriceTax_value',
+                minWidth: 100,
+                autoSizeColumn: true
             },
             {
                 text: 'Brand',
-                dataIndex: 'brand_id',
+                dataIndex: 'brand_name',
                 minWidth: 100,
-                autoSizeColumn: true,
-                renderer: function (val, meta, record, rowIndex) {
-                    if (!record.dirty) return record.data.brand_name || '';
-                    let idx = Parent.findExact('id', val);
-                    return (idx === -1) ? '' : Parent.getAt(idx).get('name');
-                },
-                editor: {
-                    xtype: 'suggestbox',
-                    displayField: 'name',
-                    valueField: 'id',
-                    editable: false,
-                    store: Brand
-                }
+                autoSizeColumn: true
             },
             {
-                text: 'Parent',
-                dataIndex: 'product_id',
-                minWidth: 100,
-                autoSizeColumn: true,
-                renderer: function (val, meta, record, rowIndex) {
-                    if (!record.dirty) return record.data.product_name || '';
-                    let idx = Parent.findExact('id', val);
-                    return (idx === -1) ? '' : Parent.getAt(idx).get('name');
-                },
-                editor: {
-                    xtype: 'suggestbox',
-                    displayField: 'name',
-                    valueField: 'id',
-                    editable: false,
-                    store: Parent
-                }
+                text: 'Tags',
+                dataIndex: 'productTag_name',
+                minWidth: 200,
+                autoSizeColumn: true
             },
             {
                 text: 'Status',
-                dataIndex: 'status_id',
+                dataIndex: 'status_name',
                 minWidth: 100,
-                autoSizeColumn: true,
-                renderer: function (val, meta, record, rowIndex) {
-                    if (!record.dirty) return record.data.status_name || '';
-                    let idx = Status.findExact('id', val);
-                    return (idx === -1) ? '' : Status.getAt(idx).get('name');
-                },
-                editor: {
-                    xtype: 'suggestbox',
-                    displayField: 'name',
-                    valueField: 'id',
-                    editable: false,
-                    store: Status
-                }
+                autoSizeColumn: true
             },
             {
-                text: 'Notes', dataIndex: 'notes', flex: 1,
-                editor: {xtype: 'textfield'}
+                text: 'Notes', dataIndex: 'notes'
             },
             {
                 xtype: 'actioncolumn',
@@ -175,7 +183,7 @@ Ext.define('A.view.master.Product', {
                 checkOnly: true,
                 mode: 'MULTI'
             },
-            store: Product,
+            store: ProductInfo,
             columns: columns,
             plugins: [
                 {
@@ -187,7 +195,7 @@ Ext.define('A.view.master.Product', {
             dockedItems: [
                 {
                     xtype: 'pagingtoolbar',
-                    store: Product,
+                    store: ProductInfo,
                     dock: 'bottom',
                     displayInfo: true,
                     displayMsg: 'Displaying data {0} - {1} of {2}',
@@ -196,6 +204,12 @@ Ext.define('A.view.master.Product', {
                 },
                 navigation
             ]
+        };
+
+        this.stores = {
+            Type, Brand, Parent, Product, ProductCode, ProductTag,
+            ProductPrice, ProductPriceDisc, ProductPriceTax, Status,
+            ProductInfo
         };
         Ext.apply(this, {
             items: [grid]
