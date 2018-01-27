@@ -1,7 +1,8 @@
 Ext.define('A.controller.master.Product', {
     extend: 'Ext.app.Controller',
-    views: ['master.Product'],
+    views: ['master.Product', 'master.ProductWindow'],
     refs: [
+        {ref: 'myEditable', selector: 'masterProduct productWindow'},
         {ref: 'myGrid', selector: 'masterProduct grid'},
         {ref: 'mySearchField', selector: 'masterProduct checkboxlistcombo'},
         {ref: 'mySearchValue', selector: 'masterProduct textfield[todo=valueFilter]'}
@@ -20,6 +21,7 @@ Ext.define('A.controller.master.Product', {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
             select: 'selectRow',
+            itemdblclick: 'doubleClickItem'
         },
         'masterProduct grid dataview': {
             refresh: 'refreshView'
@@ -40,6 +42,12 @@ Ext.define('A.controller.master.Product', {
             click: 'saveRows'
         }
     },
+    showDetails: function (index, record, gridView, event) {
+        let window = this.getMyEditable();
+        window.setTitle('Edit Product');
+        window.show();
+        console.log({index, record, gridView, event});
+    },
     pressedEnter: function (cmp, e) {
         if (e.keyCode === 13) this.filterGrid();
     },
@@ -52,8 +60,8 @@ Ext.define('A.controller.master.Product', {
         let store = me.getMyGrid().getStore();
         let fields = me.getMySearchField().getValue() || [];
         let value = me.getMySearchValue().getValue();
-        let $or = [];
         let eParams, filter = {};
+        let $or = [];
 
         try {
             filter = JSON.parse(store.proxy.extraParams.filter);
@@ -94,20 +102,16 @@ Ext.define('A.controller.master.Product', {
         }
 
     },
-    addRow: function () {
-        let grid = this.getMyGrid();
-        let store = grid.getStore();
-        let rec = store.insert(0, {});
-        grid.plugins[0].startEditByPosition({
-            row: rec[0],
-            column: 2
-        });
+    doubleClickItem: function (gridView, record, dom, index, event) {
+        this.showDetails(index, record, gridView, event);
     },
-    editRow: function (gridview, rowIndex, colIndex, item, e, record) {
-        this.getMyGrid().plugins[0].startEditByPosition({
-            row: record,
-            column: 2
-        });
+    addRow: function () {
+        let window = this.getMyEditable();
+        window.setTitle('Add New Product');
+        window.show();
+    },
+    editRow: function (gridView, dom, rowIndex, colIndex, event, record) {
+        this.showDetails(rowIndex, record, gridView, event);
     },
     deleteRow: function (gridview, rowIndex, colIndex, item, e, record) {
         let grid = this.getMyGrid();
@@ -194,7 +198,7 @@ Ext.define('A.controller.master.Product', {
     addedGrid: async function () {
         let me = this;
         let grid = me.getMyGrid();
-        let {Type} = grid.up().stores;
+        let {Type} = grid.up('masterProduct').stores;
         let store = grid.getStore();
 
         await Type.Load({

@@ -8,12 +8,13 @@ Ext.require([
     'A.model.ProductPriceDisc',
     'A.model.ProductPriceTax',
     'A.model.Status',
-    //
-    'A.soap.Product'
+    'A.soap.Product',
+    'A.view.master.ProductWindow'
 ]);
 Ext.define('A.view.master.Product', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.masterProduct',
+    layout: 'fit',
     stores: {},
     initComponent: function () {
         let Type = Ext.create('A.store.Rest', {model: 'A.model.Type'});
@@ -175,36 +176,6 @@ Ext.define('A.view.master.Product', {
                 }
             ]
         };
-        let grid = {
-            xtype: 'grid',
-            loadMask: true,
-            selModel: {
-                selType: 'checkboxmodel', //'Ext.selection.CheckboxModel'
-                checkOnly: true,
-                mode: 'MULTI'
-            },
-            store: ProductInfo,
-            columns: columns,
-            plugins: [
-                {
-                    ptype: 'cellediting', //'Ext.grid.plugin.CellEditing'
-                    clicksToEdit: 1
-                }
-            ],
-            viewConfig: {trackOver: false, stripeRows: true},
-            dockedItems: [
-                {
-                    xtype: 'pagingtoolbar',
-                    store: ProductInfo,
-                    dock: 'bottom',
-                    displayInfo: true,
-                    displayMsg: 'Displaying data {0} - {1} of {2}',
-                    emptyMsg: 'No data to display',
-                    inputItemWidth: 50
-                },
-                navigation
-            ]
-        };
 
         this.stores = {
             Type, Brand, Parent, Product, ProductCode, ProductTag,
@@ -212,9 +183,39 @@ Ext.define('A.view.master.Product', {
             ProductInfo
         };
         Ext.apply(this, {
-            items: [grid]
+            items: [
+                Ext.create('A.view.master.ProductWindow'),
+                Ext.create('Ext.grid.Panel', {
+                    loadMask: true,
+                    selModel: {
+                        selType: 'checkboxmodel', //'Ext.selection.CheckboxModel'
+                        checkOnly: true,
+                        mode: 'MULTI'
+                    },
+                    store: ProductInfo,
+                    columns: columns,
+                    plugins: [
+                        {
+                            ptype: 'cellediting', //'Ext.grid.plugin.CellEditing'
+                            clicksToEdit: 1
+                        }
+                    ],
+                    viewConfig: {trackOver: false, stripeRows: true},
+                    dockedItems: [
+                        {
+                            xtype: 'pagingtoolbar',
+                            store: ProductInfo,
+                            dock: 'bottom',
+                            displayInfo: true,
+                            displayMsg: 'Displaying data {0} - {1} of {2}',
+                            emptyMsg: 'No data to display',
+                            inputItemWidth: 50
+                        },
+                        navigation
+                    ]
+                })
+            ]
         });
-
         this.callParent(arguments);
     }
 });
