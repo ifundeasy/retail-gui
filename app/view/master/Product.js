@@ -1,4 +1,9 @@
 Ext.require([
+    'A.model.Status',
+    'A.model.Tag',
+    'A.model.Unit',
+    'A.model.Tax',
+    'A.model.Discount',
     'A.model.Type',
     'A.model.Brand',
     'A.model.Product',
@@ -7,7 +12,6 @@ Ext.require([
     'A.model.ProductPrice',
     'A.model.ProductPriceDisc',
     'A.model.ProductPriceTax',
-    'A.model.Status',
     'A.soap.Product',
     'A.view.master.ProductWindow'
 ]);
@@ -27,7 +31,16 @@ Ext.define('A.view.master.Product', {
         let ProductPriceDisc = Ext.create('A.store.Rest', {model: 'A.model.ProductPriceDisc'});
         let ProductPriceTax = Ext.create('A.store.Rest', {model: 'A.model.ProductPriceTax'});
         let Status = Ext.create('A.store.Rest', {model: 'A.model.Status'});
+        let Tag = Ext.create('A.store.Rest', {model: 'A.model.Tag'});
+        let Unit = Ext.create('A.store.Rest', {model: 'A.model.Unit'});
+        let Tax = Ext.create('A.store.Rest', {model: 'A.model.Tax'});
+        let Discount = Ext.create('A.store.Rest', {model: 'A.model.Discount'});
         let ProductInfo = Ext.create('A.store.Rest', {model: 'A.soap.Product'});
+        let stores = {
+            Type, Brand, Parent, Product, ProductCode, ProductTag,
+            ProductPrice, ProductPriceDisc, ProductPriceTax, Status,
+            Tag, Unit, Tax, Discount, ProductInfo
+        };
         //
         let columns = [
             //new Ext.grid.RowNumberer(),
@@ -176,17 +189,15 @@ Ext.define('A.view.master.Product', {
                 }
             ]
         };
+        let productWindow = Ext.create('A.view.master.ProductWindow', {stores});
 
-        this.stores = {
-            Type, Brand, Parent, Product, ProductCode, ProductTag,
-            ProductPrice, ProductPriceDisc, ProductPriceTax, Status,
-            ProductInfo
-        };
+        this.stores = stores;
         Ext.apply(this, {
             items: [
-                Ext.create('A.view.master.ProductWindow'),
+                productWindow,
                 Ext.create('Ext.grid.Panel', {
                     loadMask: true,
+                    prop: 'productInfo',
                     selModel: {
                         selType: 'checkboxmodel', //'Ext.selection.CheckboxModel'
                         checkOnly: true,

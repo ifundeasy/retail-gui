@@ -21,3 +21,22 @@
 .btn-danger .x-btn-inner:hover {
     color: #FFFFFF;
 }
+input::-webkit-input-placeholder {
+    font-style: italic;
+    color: rgba(255, 0, 28, 0.4) !important;
+}
+
+input:-moz-placeholder { /* Firefox 18- */
+    font-style: italic;
+    color: rgba(255, 0, 28, 0.4) !important;
+}
+
+input::-moz-placeholder {  /* Firefox 19+ */
+    font-style: italic;
+    color: rgba(255, 0, 28, 0.4) !important;
+}
+
+input:-ms-input-placeholder {
+    font-style: italic;
+    color: rgba(255, 0, 28, 0.4) !important;
+}

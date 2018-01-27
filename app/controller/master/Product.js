@@ -3,7 +3,7 @@ Ext.define('A.controller.master.Product', {
     views: ['master.Product', 'master.ProductWindow'],
     refs: [
         {ref: 'myEditable', selector: 'masterProduct productWindow'},
-        {ref: 'myGrid', selector: 'masterProduct grid'},
+        {ref: 'myGrid', selector: 'masterProduct grid[prop="productInfo"]'},
         {ref: 'mySearchField', selector: 'masterProduct checkboxlistcombo'},
         {ref: 'mySearchValue', selector: 'masterProduct textfield[todo=valueFilter]'}
     ],
