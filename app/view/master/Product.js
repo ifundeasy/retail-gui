@@ -25,11 +25,11 @@ Ext.define('A.view.master.Product', {
         let Brand = Ext.create('A.store.Rest', {model: 'A.model.Brand'});
         let Parent = Ext.create('A.store.Rest', {model: 'A.model.Product'});
         let Product = Ext.create('A.store.Rest', {model: 'A.model.Product'});
-        let ProductCode = Ext.create('A.store.Rest', {model: 'A.model.ProductCode'});
-        let ProductTag = Ext.create('A.store.Rest', {model: 'A.model.ProductTag'});
+        let ProductCode = Ext.create('A.store.Rest', {model: 'A.model.ProductCode', pageSize: 10});
+        let ProductTag = Ext.create('A.store.Rest', {model: 'A.model.ProductTag', pageSize: 10});
         let ProductPrice = Ext.create('A.store.Rest', {model: 'A.model.ProductPrice'});
-        let ProductPriceDisc = Ext.create('A.store.Rest', {model: 'A.model.ProductPriceDisc'});
-        let ProductPriceTax = Ext.create('A.store.Rest', {model: 'A.model.ProductPriceTax'});
+        let ProductPriceDisc = Ext.create('A.store.Rest', {model: 'A.model.ProductPriceDisc', pageSize: 3});
+        let ProductPriceTax = Ext.create('A.store.Rest', {model: 'A.model.ProductPriceTax', pageSize: 3});
         let Status = Ext.create('A.store.Rest', {model: 'A.model.Status'});
         let Tag = Ext.create('A.store.Rest', {model: 'A.model.Tag'});
         let Unit = Ext.create('A.store.Rest', {model: 'A.model.Unit'});
@@ -44,7 +44,7 @@ Ext.define('A.view.master.Product', {
         //
         let columns = [
             //new Ext.grid.RowNumberer(),
-            {text: 'ID', dataIndex: 'id', minWidth: 50, autoSizeColumn: true},
+            {text: 'ID', dataIndex: 'id', minWidth: 60, autoSizeColumn: true},
             {
                 text: 'Name',
                 dataIndex: 'name',
