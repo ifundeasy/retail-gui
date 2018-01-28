@@ -12,6 +12,9 @@ Ext.define('A.controller.Core', {
         {ref: 'loginWindow', selector: 'login'}
     ],
     events: {
+        'content' : {
+            afterrender: 'renderedContent'
+        },
         'login button[action=login]': {
             click: 'onClickLogin'
         },
@@ -21,6 +24,10 @@ Ext.define('A.controller.Core', {
         'viewport > container > panel > toolbar > button[action="logout"]': {
             click: 'onClickLogout'
         }
+    },
+    renderedContent: function (elm, eOpts) {
+        let element = Ext.query('#' + elm.tabBar.id + ' div[id$=innerCt]')[0];
+        element.style.backgroundColor = '#f7f7f7';
     },
     doLogin: function (data = {}) {
         let me = this;
