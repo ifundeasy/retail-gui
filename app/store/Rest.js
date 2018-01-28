@@ -41,9 +41,45 @@ Ext.define('A.store.Rest', {
             }
         }
     },
+    Sort: function (field, direction) {
+        let self = this;
+        self.sort(field, direction);
+        return new Promise(function (resolve, reject) {
+            let z = setInterval(function () {
+                if (!self.isLoading()) {
+                    clearInterval(z)
+                    resolve();
+                }
+            }, 100);
+        });
+    },
+    PreviousPage: function () {
+        let self = this;
+        return new Promise(function (resolve, reject) {
+            self.previousPage({
+                scope: self,
+                callback: function (records, operation, success) {
+                    if (success) resolve(records);
+                    else reject(operation);
+                }
+            });
+        });
+    },
+    NextPage: function () {
+        let self = this;
+        return new Promise(function (resolve, reject) {
+            self.nextPage({
+                scope: self,
+                callback: function (records, operation, success) {
+                    if (success) resolve(records);
+                    else reject(operation);
+                }
+            });
+        });
+    },
     Load: function (extraParams) {
         let self = this;
-        self.proxy.extraParams = extraParams ? extraParams : '';
+        self.proxy.extraParams = self.proxy.extraParams || extraParams;
         return new Promise(function (resolve, reject) {
             self.load({
                 scope: self,
