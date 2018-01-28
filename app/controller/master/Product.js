@@ -1,5 +1,6 @@
 Ext.define('A.controller.master.Product', {
     extend: 'Ext.app.Controller',
+    requires: ['A.controller.master.ProductWindow'],
     views: ['master.Product', 'master.ProductWindow'],
     refs: [
         {ref: 'myEditable', selector: 'masterProduct productWindow'},
@@ -17,7 +18,7 @@ Ext.define('A.controller.master.Product', {
             //change: 'filterGrid',
             afterrender: 'addedSearchField'
         },
-        'masterProduct grid': {
+        'masterProduct grid[prop="productInfo"]': {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
             select: 'selectRow',
@@ -32,21 +33,20 @@ Ext.define('A.controller.master.Product', {
         'masterProduct actioncolumn[todo="delete"]': {
             click: 'deleteRow'
         },
-        'masterProduct toolbar button[todo="add"]': {
+        'masterProduct grid[prop="productInfo"] toolbar button[todo="add"]': {
             click: 'addRow'
         },
-        'masterProduct toolbar button[todo="delete"]': {
+        'masterProduct grid[prop="productInfo"] toolbar button[todo="delete"]': {
             click: 'deleteRows'
         },
-        'masterProduct toolbar button[todo="save"]': {
+        'masterProduct grid[prop="productInfo"] toolbar button[todo="save"]': {
             click: 'saveRows'
         }
     },
-    showDetails: function (index, record, gridView, event) {
+    showWindow: function (index, record, gridView, event) {
         let window = this.getMyEditable();
-        window.setTitle('Edit Product');
+        this.windowCtrl.params = {index, record, store: record.store};
         window.show();
-        console.log({index, record, gridView, event});
     },
     pressedEnter: function (cmp, e) {
         if (e.keyCode === 13) this.filterGrid();
@@ -66,7 +66,7 @@ Ext.define('A.controller.master.Product', {
         try {
             filter = JSON.parse(store.proxy.extraParams.filter);
         } catch (e) {
-           //
+            //
         }
         fields.forEach(function (el) {
             if (el !== -1) $or.push({[el]: {$like: `%${value}%`}})
@@ -75,9 +75,11 @@ Ext.define('A.controller.master.Product', {
         if (value && $or.length) filter['$or'] = $or;
         else delete filter['$or'];
 
-        if (Object.keys(filter).length) eParams = {filter: JSON.stringify(filter)};
+        if (Object.keys(filter).length) {
+            store.proxy.extraParams = {filter: JSON.stringify(filter)};
+        }
 
-        await store.Load(eParams);
+        await store.Load();
         me.ready4Filter = true;
     },
     addedSearchField: function () {
@@ -103,36 +105,45 @@ Ext.define('A.controller.master.Product', {
 
     },
     doubleClickItem: function (gridView, record, dom, index, event) {
-        this.showDetails(index, record, gridView, event);
+        this.showWindow(index, record, gridView, event);
     },
-    addRow: function () {
-        let window = this.getMyEditable();
-        window.setTitle('Add New Product');
-        window.show();
-    },
-    editRow: function (gridView, dom, rowIndex, colIndex, event, record) {
-        this.showDetails(rowIndex, record, gridView, event);
-    },
-    deleteRow: function (gridview, rowIndex, colIndex, item, e, record) {
+    addRow: async function () {
         let grid = this.getMyGrid();
+        let {Brand, Unit, Type, Product, ProductPrice} = grid.up('masterProduct').stores;
         let store = grid.getStore();
-        Ext.Msg.show({
-            title: 'Confirm',
-            msg: 'Deleting an item. This action will take effect when you save a data.',
-            buttons: Ext.MessageBox.YESNO,
-            closeable: false,
-            icon: Ext.Msg.QUESTION,
-            animateTarget: grid,
-            fn: function (choose) {
-                if (choose === 'yes') {
-                    store.remove(record);
+        //
+        try {
+            let name = new Date().getTime().toString(36);
+            let unit_id = Unit.getAt(0).get('id');
+            let brand_id = Brand.getAt(0).get('id');
+
+            Product.insert(0, {name, brand_id});
+
+            if (Type.count()) {
+                let product = await Product.Sync();
+                let {insertId} = JSON.parse(product.operations[0].response.responseText).data;
+                if (insertId) {
+                    ProductPrice.insert(0, {
+                        product_id: insertId,
+                        type_id: this.type_id,
+                        unit_id
+                    });
+                    await ProductPrice.Sync();
+                    await store.load();
                 }
             }
-        });
+        } catch (e) {
+            console.error(e)
+        }
+    },
+    editRow: function (gridView, dom, rowIndex, colIndex, event, record) {
+        this.showWindow(rowIndex, record, gridView, event);
     },
     deleteRows: function (cmp) {
         let grid = this.getMyGrid();
         let {items} = grid.getSelectionModel().selected;
+        let {Product} = grid.up('masterProduct').stores;
+
         if (items.length) {
             Ext.Msg.show({
                 title: 'Confirm',
@@ -141,8 +152,15 @@ Ext.define('A.controller.master.Product', {
                 closeable: false,
                 icon: Ext.Msg.QUESTION,
                 animateTarget: cmp,
-                fn: function (choose) {
+                fn: async function (choose) {
                     if (choose === 'yes') {
+                        let $in = [];
+                        items.forEach(function (item) {
+                            $in.push(item.get('id'))
+                        });
+                        Product.proxy.extraParams = {filter: JSON.stringify({id: {$in}})};
+                        await Product.Load();
+                        Product.removeAll();
                         grid.getStore().remove(items);
                     }
                 }
@@ -150,38 +168,30 @@ Ext.define('A.controller.master.Product', {
         }
     },
     saveRows: function (cmp) {
-        let total = 0;
         let grid = this.getMyGrid();
         let store = grid.getStore();
-        let msg = [], op = {create: 0, delete: 0, update: 0};
+        let {Product} = grid.up('masterProduct').stores;
+        let msg, deleting = store.removed.length;
 
-        op.delete += store.removed.length;
-        store.each(function (rec) {
-            if (!rec.raw.id) op.create += 1;
-            if (rec.raw.id && rec.dirty) op.update += 1;
-        });
-        for (let o in op) {
-            if (op[o]) {
-                total += 1;
-                msg.push(o + ' ' + op[o] + ' items');
-            }
-        }
-
-        if (total) {
+        if (deleting) {
+            msg = 'Deleting ' + deleting + ' items';
             Ext.Msg.show({
                 title: 'Confirm',
-                msg: 'Operation such : ' + msg.join(', ') + ' will be save.<br/>Confirm for saving operation.',
+                msg: 'Operation such : ' + msg + ' will be save.<br/>Confirm for saving operation.',
                 buttons: Ext.MessageBox.YESNO,
                 closeable: false,
                 icon: Ext.Msg.QUESTION,
                 animateTarget: cmp,
                 fn: async function (choose) {
                     if (choose === 'yes') {
-                        let mySync = await store.Sync();
+                        let mySync = await Product.Sync();
                         if (mySync instanceof Error) {
                             console.log(mySync)
                         } else {
                             console.log('SUCCESS', mySync);
+                            Product.proxy.extraParams = {};
+                            Product.Load();
+
                             await store.Load();
                         }
                     }
@@ -198,10 +208,10 @@ Ext.define('A.controller.master.Product', {
     addedGrid: async function () {
         let me = this;
         let grid = me.getMyGrid();
-        let {Type} = grid.up('masterProduct').stores;
+        let {Unit, Type, Brand, Product, ProductPrice} = grid.up('masterProduct').stores;
         let store = grid.getStore();
 
-        await Type.Load({
+        Type.proxy.extraParams = {
             filter: JSON.stringify({
                 name: {
                     $or: [
@@ -210,12 +220,22 @@ Ext.define('A.controller.master.Product', {
                     ]
                 }
             })
-        });
-        await store.Load({
+        };
+        await Type.Load();
+
+        this.type_id = Type.getAt(0).get('id');
+        store.proxy.extraParams = {
             filter: JSON.stringify({
-                type_id: Type.getAt(0).get('id')
+                type_id: this.type_id
             })
-        });
+        };
+
+        await Product.Load();
+        await Unit.Load();
+        await Brand.Load();
+        await ProductPrice.Load();
+
+        store.sort('id', 'desc');
     },
     init: function () {
         let me = this;
@@ -228,5 +248,8 @@ Ext.define('A.controller.master.Product', {
             }
         }
         me.control(me.events);
+        //
+        this.windowCtrl = Ext.create('A.controller.master.ProductWindow');
+        this.windowCtrl.init();
     }
 });
