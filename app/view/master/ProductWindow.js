@@ -17,6 +17,7 @@ Ext.define('A.view.master.ProductWindow', {
     border: false,
     modal: true,
     initComponent: function () {
+        let {moneyStep} = A.app;
         let {
             Type, Brand, Parent, Product, ProductCode, ProductTag,
             ProductPrice, ProductPriceDisc, ProductPriceTax, Status,
@@ -154,10 +155,12 @@ Ext.define('A.view.master.ProductWindow', {
                                             text: 'Code',
                                             dataIndex: 'code',
                                             minWidth: 100,
-                                            autoSizeColumn: true
+                                            autoSizeColumn: true,
+                                            editor: {xtype: 'textfield'}
                                         },
                                         {
-                                            text: 'Notes', dataIndex: 'notes'
+                                            text: 'Notes', dataIndex: 'notes',
+                                            editor: {xtype: 'textfield'}
                                         }
                                     ],
                                     margin: '0 5 0 10',
@@ -174,12 +177,12 @@ Ext.define('A.view.master.ProductWindow', {
                                         {
                                             xtype: 'toolbar',
                                             dock: 'top',
-                                            style: { backgroundColor: 'rgba(173, 211, 238, 0.47);' },
+                                            style: {backgroundColor: 'rgba(173, 211, 238, 0.47);'},
                                             items: [
                                                 {
                                                     xtype: 'component',
                                                     html: 'Code',
-                                                    style: { fontWeight: 'bolder' }
+                                                    style: {fontWeight: 'bolder'}
                                                 },
                                                 '->',
                                                 {
@@ -231,7 +234,8 @@ Ext.define('A.view.master.ProductWindow', {
                                             }
                                         },
                                         {
-                                            text: 'Notes', dataIndex: 'notes'
+                                            text: 'Notes', dataIndex: 'notes',
+                                            editor: {xtype: 'textfield'}
                                         }
                                     ],
                                     dockedItems: [
@@ -247,12 +251,12 @@ Ext.define('A.view.master.ProductWindow', {
                                         {
                                             xtype: 'toolbar',
                                             dock: 'top',
-                                            style: { backgroundColor: 'rgba(173, 211, 238, 0.47);' },
+                                            style: {backgroundColor: 'rgba(173, 211, 238, 0.47);'},
                                             items: [
                                                 {
                                                     xtype: 'component',
                                                     html: 'Tags',
-                                                    style: { fontWeight: 'bolder' }
+                                                    style: {fontWeight: 'bolder'}
                                                 },
                                                 '->',
                                                 {
@@ -315,7 +319,13 @@ Ext.define('A.view.master.ProductWindow', {
                                                     format: ',0.00',
                                                     minWidth: 120,
                                                     autoSizeColumn: true,
-                                                    align: 'right'
+                                                    align: 'right',
+                                                    editor: {
+                                                        xtype: 'numberfield',
+                                                        step: moneyStep,
+                                                        minValue: 0,
+                                                        fieldStyle: 'text-align:right;'
+                                                    }
                                                 },
                                                 {
                                                     text: 'Type',
@@ -354,7 +364,8 @@ Ext.define('A.view.master.ProductWindow', {
                                                     }
                                                 },
                                                 {
-                                                    text: 'Notes', dataIndex: 'notes'
+                                                    text: 'Notes', dataIndex: 'notes',
+                                                    editor: {xtype: 'textfield'}
                                                 }
                                             ],
                                             selModel: {selType: 'checkboxmodel', checkOnly: true, mode: 'MULTI'},
@@ -373,12 +384,12 @@ Ext.define('A.view.master.ProductWindow', {
                                                 {
                                                     xtype: 'toolbar',
                                                     dock: 'top',
-                                                    style: { backgroundColor: 'rgba(173, 211, 238, 0.47);' },
+                                                    style: {backgroundColor: 'rgba(173, 211, 238, 0.47);'},
                                                     items: [
                                                         {
                                                             xtype: 'component',
                                                             html: 'Prices',
-                                                            style: { fontWeight: 'bolder' }
+                                                            style: {fontWeight: 'bolder'}
                                                         },
                                                         '->',
                                                         {
@@ -462,7 +473,8 @@ Ext.define('A.view.master.ProductWindow', {
                                                     }
                                                 },
                                                 {
-                                                    text: 'Notes', dataIndex: 'notes'
+                                                    text: 'Notes', dataIndex: 'notes',
+                                                    editor: {xtype: 'textfield'}
                                                 }
                                             ],
                                             dockedItems: [
@@ -478,12 +490,12 @@ Ext.define('A.view.master.ProductWindow', {
                                                 {
                                                     xtype: 'toolbar',
                                                     dock: 'top',
-                                                    style: { backgroundColor: 'rgba(173, 211, 238, 0.47);' },
+                                                    style: {backgroundColor: 'rgba(173, 211, 238, 0.47);'},
                                                     items: [
                                                         {
                                                             xtype: 'component',
                                                             html: 'Taxes',
-                                                            style: { fontWeight: 'bolder' }
+                                                            style: {fontWeight: 'bolder'}
                                                         },
                                                         '->',
                                                         {
@@ -551,7 +563,8 @@ Ext.define('A.view.master.ProductWindow', {
                                                     }
                                                 },
                                                 {
-                                                    text: 'Notes', dataIndex: 'notes'
+                                                    text: 'Notes', dataIndex: 'notes',
+                                                    editor: {xtype: 'textfield'}
                                                 }
                                             ],
                                             dockedItems: [
@@ -567,12 +580,12 @@ Ext.define('A.view.master.ProductWindow', {
                                                 {
                                                     xtype: 'toolbar',
                                                     dock: 'top',
-                                                    style: { backgroundColor: 'rgba(173, 211, 238, 0.47);' },
+                                                    style: {backgroundColor: 'rgba(173, 211, 238, 0.47);'},
                                                     items: [
                                                         {
                                                             xtype: 'component',
                                                             html: 'Discounts',
-                                                            style: { fontWeight: 'bolder' }
+                                                            style: {fontWeight: 'bolder'}
                                                         },
                                                         '->',
                                                         {

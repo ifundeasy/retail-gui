@@ -2,16 +2,16 @@ Ext.define('A.controller.master.ProductWindow', {
     extend: 'Ext.app.Controller',
     views: ['master.ProductWindow'],
     refs: [
+        {ref: 'window', selector: 'productWindow'},
         {ref: 'fieldId', selector: 'productWindow [name=id]'},
         {ref: 'fieldParentId', selector: 'productWindow [name=product_id]'},
         {ref: 'fieldBrand', selector: 'productWindow [name=brand_id]'},
         {ref: 'fieldName', selector: 'productWindow [name=name]'},
         {ref: 'fieldStatus', selector: 'productWindow [name=status_id]'},
-        {ref: 'window', selector: 'productWindow'},
         {ref: 'save', selector: 'productWindow button[action=save]'},
         {ref: 'close', selector: 'productWindow button[action=close]'},
         {ref: 'nextBtn', selector: 'productWindow button[action=next]'},
-        {ref: 'prevBtn', selector: 'productWindow button[action=prev]'}
+        {ref: 'prevBtn', selector: 'productWindow button[action=prev]'},
     ],
     events: {
         'productWindow ' : {
@@ -31,6 +31,18 @@ Ext.define('A.controller.master.ProductWindow', {
         },
         'productWindow tabpanel' : {
             afterrender: 'afterrenderTabpanel'
+        },
+        'productWindow grid': {
+            itemclick: 'clickForSelect'
+        },
+        'productWindow grid dataview': {
+            refresh: 'refreshView'
+        },
+        'productWindow grid toolbar button[todo="add"]': {
+            click: 'addRow'
+        },
+        'productWindow grid toolbar button[todo="delete"]': {
+            click: 'deleteRows'
         }
     },
     loadData: async function (record) {
@@ -72,8 +84,6 @@ Ext.define('A.controller.master.ProductWindow', {
         ProductPriceTax.proxy.extraParams = {filter: JSON.stringify({productPrice_id: {$in: ProductPrice.data.keys}})};
         ProductPriceDisc.Sort('id', 'DESC');
         ProductPriceTax.Sort('id', 'DESC');
-
-
     },
     show: async function () {
         let window = this.getWindow();
@@ -111,7 +121,7 @@ Ext.define('A.controller.master.ProductWindow', {
         element.style.backgroundColor = '#fff';
     },
     clickSaveBtn: function () {
-        //
+        console.log('save');
     },
     clickCloseBtn: function () {
         this.getWindow().hide();
@@ -175,6 +185,47 @@ Ext.define('A.controller.master.ProductWindow', {
         }
 
         me.loadData(me.params.record)
+    },
+    refreshView: function (dataview) {
+        if (dataview.panel) {
+            Ext.each(dataview.panel.columns, function (column) {
+                if (column.autoSizeColumn === true) {
+                    column.autoSize();
+                }
+            })
+        }
+
+    },
+    clickForSelect: function (grid, rec, gridview, index) {
+        grid.getSelectionModel().select(index)
+    },
+    addRow: function (btn, event) {
+        let grid = btn.up('grid');
+        let store = grid.getStore();
+        let rec = store.insert(0, {});
+        grid.plugins[0].startEditByPosition({
+            row: rec[0],
+            column: 2
+        });
+    },
+    deleteRows: function (btn) {
+        let grid = btn.up('grid');
+        let {items} = grid.getSelectionModel().selected;
+        if (items.length) {
+            Ext.Msg.show({
+                title: 'Confirm',
+                msg: 'Delete multiple, ' + items.length + ' items. This action will take effect when you save a data.',
+                buttons: Ext.MessageBox.YESNO,
+                closeable: false,
+                icon: Ext.Msg.QUESTION,
+                animateTarget: btn,
+                fn: function (choose) {
+                    if (choose === 'yes') {
+                        grid.getStore().remove(items);
+                    }
+                }
+            });
+        }
     },
     init: function () {
         let me = this;
