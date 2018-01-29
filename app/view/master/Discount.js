@@ -17,7 +17,7 @@ Ext.define('A.view.master.Discount', {
                     xtype: 'grid',
                     loadMask: true,
                     selModel: {
-                        selDiscount: 'checkboxmodel', //'Ext.selection.CheckboxModel'
+                        selType: 'checkboxmodel', //'Ext.selection.CheckboxModel'
                         checkOnly: true,
                         mode: 'MULTI'
                     },

@@ -19,7 +19,7 @@ Ext.define('A.controller.master.Status', {
         'masterStatus grid': {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
-            select: 'selectRow',
+            select: 'selectRow'
         },
         'masterStatus grid dataview': {
             refresh: 'refreshView'

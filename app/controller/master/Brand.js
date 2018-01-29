@@ -19,7 +19,7 @@ Ext.define('A.controller.master.Brand', {
         'masterBrand grid': {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
-            select: 'selectRow',
+            select: 'selectRow'
         },
         'masterBrand grid dataview': {
             refresh: 'refreshView'

@@ -17,7 +17,7 @@ Ext.define('A.view.master.Taxes', {
                     xtype: 'grid',
                     loadMask: true,
                     selModel: {
-                        selTaxes: 'checkboxmodel', //'Ext.selection.CheckboxModel'
+                        selType: 'checkboxmodel', //'Ext.selection.CheckboxModel'
                         checkOnly: true,
                         mode: 'MULTI'
                     },

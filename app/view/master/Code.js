@@ -16,7 +16,7 @@ Ext.define('A.view.master.Code', {
                     xtype: 'grid',
                     loadMask: true,
                     selModel: {
-                        selCode: 'checkboxmodel', //'Ext.selection.CheckboxModel'
+                        selType: 'checkboxmodel', //'Ext.selection.CheckboxModel'
                         checkOnly: true,
                         mode: 'MULTI'
                     },
