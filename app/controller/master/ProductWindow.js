@@ -3,13 +3,14 @@ Ext.define('A.controller.master.ProductWindow', {
     views: ['master.ProductWindow'],
     refs: [
         {ref: 'window', selector: 'productWindow'},
+        {ref: 'gridPrice', selector: 'productWindow grid[prop="productPrice"]'},
         {ref: 'fieldId', selector: 'productWindow [name=id]'},
         {ref: 'fieldParentId', selector: 'productWindow [name=product_id]'},
         {ref: 'fieldBrand', selector: 'productWindow [name=brand_id]'},
         {ref: 'fieldName', selector: 'productWindow [name=name]'},
         {ref: 'fieldStatus', selector: 'productWindow [name=status_id]'},
-        {ref: 'save', selector: 'productWindow button[action=save]'},
-        {ref: 'close', selector: 'productWindow button[action=close]'},
+        {ref: 'saveBtn', selector: 'productWindow button[action=save]'},
+        {ref: 'closeBtn', selector: 'productWindow button[action=close]'},
         {ref: 'nextBtn', selector: 'productWindow button[action=next]'},
         {ref: 'prevBtn', selector: 'productWindow button[action=prev]'},
     ],
@@ -33,7 +34,9 @@ Ext.define('A.controller.master.ProductWindow', {
             afterrender: 'afterrenderTabpanel'
         },
         'productWindow grid': {
-            itemclick: 'clickForSelect'
+            deselect: 'deselectRow',
+            //itemclick: 'clickForSelect',
+            select: 'selectRow'
         },
         'productWindow grid dataview': {
             refresh: 'refreshView'
@@ -120,8 +123,63 @@ Ext.define('A.controller.master.ProductWindow', {
         let element = Ext.query('#' + elm.tabBar.id + ' div[id$=innerCt]')[0];
         element.style.backgroundColor = '#fff';
     },
-    clickSaveBtn: function () {
-        console.log('save');
+    shouldSync: function (store, list) {
+        let should = [];
+        if (store.removed.length) should.push(true);
+        store.each(function (rec) {
+            if (!rec.get('id')) should.push(true);
+            else should.push(rec.dirty);
+        });
+
+        this.shouldSave.push(should.indexOf(true) > -1);
+        return (should.indexOf(true) > -1)
+    },
+    clickSaveBtn: async function (btn) {
+        let me = this;
+        let {ProductInfo, Product, ProductCode, ProductTag, ProductPrice, ProductPriceTax, ProductPriceDisc} = this.stores;
+        let product = Product.getAt(0);
+        let id = product.get('id');
+
+        btn.setDisabled(1);
+
+        me.shouldSave = [];
+        product.set({
+            product_id: me.getFieldParentId().getValue(),
+            brand_id: me.getFieldBrand().getValue(),
+            name: me.getFieldName().getValue(),
+            status_id: me.getFieldStatus().getValue()
+        });
+
+        if (me.shouldSync(Product)) {
+            await Product.Sync();
+            await Product.Load();
+        }
+        if (me.shouldSync(ProductCode)) {
+            await ProductCode.Sync();
+            await ProductCode.Load();
+        }
+        if (me.shouldSync(ProductTag)) {
+            await ProductTag.Sync();
+            await ProductTag.Load();
+        }
+        if (me.shouldSync(ProductPrice)) {
+            await ProductPrice.Sync();
+            await ProductPrice.Load();
+        }
+        if (me.shouldSync(ProductPriceTax)) {
+            await ProductPriceTax.Sync();
+            await ProductPriceTax.Load();
+        }
+        if (me.shouldSync(ProductPriceDisc)) {
+            await ProductPriceDisc.Sync();
+            await ProductPriceDisc.Load();
+        }
+
+        let saveAny = me.shouldSave.indexOf(true) > -1;
+
+        if (saveAny) await ProductInfo.Load();
+
+        btn.setDisabled(0);
     },
     clickCloseBtn: function () {
         this.getWindow().hide();
@@ -196,17 +254,71 @@ Ext.define('A.controller.master.ProductWindow', {
         }
 
     },
-    clickForSelect: function (grid, rec, gridview, index) {
-        grid.getSelectionModel().select(index)
+    deselectRow: async function (model, record, index) {
+        let me = this;
+        let clsName = record.store.model.$className;
+        if (clsName === 'A.model.ProductPrice') {
+            let selection = me.getGridPrice().getSelectionModel().getSelection();
+            let {ProductPrice, ProductPriceTax, ProductPriceDisc} = this.stores;
+
+            if (!selection.length) {
+                ProductPriceTax.proxy.extraParams = {filter: JSON.stringify({productPrice_id: {$in: ProductPrice.data.keys}})};
+                ProductPriceDisc.proxy.extraParams = {filter: JSON.stringify({productPrice_id: {$in: ProductPrice.data.keys}})};
+            }
+        }
     },
-    addRow: function (btn, event) {
+    selectRow: async function (model, record, index) {
+        let clsName = record.store.model.$className;
+
+        if (clsName === 'A.model.ProductPrice') {
+            let {ProductPrice, ProductPriceTax, ProductPriceDisc} = this.stores;
+            let selection = this.getGridPrice().getSelectionModel().getSelection();
+            if (selection.length === 1) {
+                ProductPriceTax.proxy.extraParams = {filter: JSON.stringify({productPrice_id: record.get('id')})};
+                ProductPriceDisc.proxy.extraParams = {filter: JSON.stringify({productPrice_id: record.get('id')})};
+            } else {
+                ProductPriceTax.proxy.extraParams = {filter: JSON.stringify({productPrice_id: {$in: ProductPrice.data.keys}})};
+                ProductPriceDisc.proxy.extraParams = {filter: JSON.stringify({productPrice_id: {$in: ProductPrice.data.keys}})};
+            }
+        }
+    },
+    clickForSelect: function (grid, rec, gridview, index) {
+        grid.getSelectionModel().select(index);
+    },
+    addRow: async function (btn, event) {
+        let me = this;
+        let {Product, Type, Unit} = me.stores;
+        let product_id = Product.getAt(0).get('id');
         let grid = btn.up('grid');
         let store = grid.getStore();
-        let rec = store.insert(0, {});
-        grid.plugins[0].startEditByPosition({
-            row: rec[0],
-            column: 2
-        });
+        let clsName = store.model.$className;
+        let rec, justOK = true;
+
+        if (clsName === 'A.model.ProductPrice') {
+            rec = store.insert(0, {
+                product_id,
+                type_id: Type.getAt(0).get('id'),
+                unit_id: Unit.getAt(0).get('id')
+            });
+            await store.Sync();
+            await store.Load();
+        } else if (['A.model.ProductPriceTax', 'A.model.ProductPriceDisc'].indexOf(clsName) > -1) {
+            let priceTarget = me.getGridPrice().getSelectionModel().getSelection()[0];
+            if (priceTarget) {
+                rec = store.insert(0, {productPrice_id: priceTarget.get('id')})
+            } else {
+                justOK = false
+            }
+        } else {
+            rec = store.insert(0, {product_id})
+        }
+
+        if (justOK) {
+            grid.plugins[0].startEditByPosition({
+                row: rec[0],
+                column: 2
+            });
+        }
     },
     deleteRows: function (btn) {
         let grid = btn.up('grid');

@@ -304,6 +304,7 @@ Ext.define('A.view.master.ProductWindow', {
                                     items: [
                                         {
                                             xtype: 'grid',
+                                            prop: 'productPrice',
                                             store: ProductPrice,
                                             columns: [
                                                 {
@@ -434,9 +435,9 @@ Ext.define('A.view.master.ProductWindow', {
                                             margin: '0 1 10 0',
                                             columns: [
                                                 {
-                                                    text: 'ID',
-                                                    dataIndex: 'id',
-                                                    minWidth: 60,
+                                                    text: 'PriceID',
+                                                    dataIndex: 'productPrice_id',
+                                                    minWidth: 100,
                                                     autoSizeColumn: true
                                                 },
                                                 {
@@ -524,9 +525,9 @@ Ext.define('A.view.master.ProductWindow', {
                                             margin: '0 1 0 0',
                                             columns: [
                                                 {
-                                                    text: 'ID',
-                                                    dataIndex: 'id',
-                                                    minWidth: 60,
+                                                    text: 'PriceID',
+                                                    dataIndex: 'productPrice_id',
+                                                    minWidth: 100,
                                                     autoSizeColumn: true
                                                 },
                                                 {
