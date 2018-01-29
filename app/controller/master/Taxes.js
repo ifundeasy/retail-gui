@@ -19,7 +19,7 @@ Ext.define('A.controller.master.Taxes', {
         'masterTaxes grid': {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
-            select: 'selectRow',
+            select: 'selectRow'
         },
         'masterTaxes grid dataview': {
             refresh: 'refreshView'

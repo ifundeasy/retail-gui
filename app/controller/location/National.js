@@ -19,7 +19,7 @@ Ext.define('A.controller.location.National', {
         'masterNational grid': {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
-            select: 'selectRow',
+            select: 'selectRow'
         },
         'masterNational grid dataview': {
             refresh: 'refreshView'

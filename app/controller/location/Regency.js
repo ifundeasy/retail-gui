@@ -19,7 +19,7 @@ Ext.define('A.controller.location.Regency', {
         'masterRegency grid': {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
-            select: 'selectRow',
+            select: 'selectRow'
         },
         'masterRegency grid dataview': {
             refresh: 'refreshView'

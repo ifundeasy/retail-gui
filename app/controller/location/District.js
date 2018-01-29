@@ -19,7 +19,7 @@ Ext.define('A.controller.location.District', {
         'masterDistrict grid': {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
-            select: 'selectRow',
+            select: 'selectRow'
         },
         'masterDistrict grid dataview': {
             refresh: 'refreshView'
@@ -131,45 +131,6 @@ Ext.define('A.controller.location.District', {
                 fn: function (choose) {
                     if (choose === 'yes') {
                         grid.getStore().remove(items);
-                    }
-                }
-            });
-        }
-    },
-    saveRows: function (cmp) {
-        let grid = this.getMyGrid();
-        let store = grid.getStore();
-        let msg = [], op = {create: 0, delete: 0, update: 0};
-        let total = store.removed.length;
-        op.delete += store.removed.length;
-        store.each(function (rec) {
-            if (!rec.raw.id) {
-                op.create += 1;
-                total += 1;
-            }
-            if (rec.raw.id && rec.dirty) {
-                total += 1;
-                op.update += 1;
-            }
-        });
-        if (total) {
-            for (let o in op) if (op[o]) msg.push(o + ' ' + op[o] + ' items');
-            Ext.Msg.show({
-                title: 'Confirm',
-                msg: 'Operation such : ' + msg.join(', ') + ' will be save.<br/>Confirm for saving operation.',
-                buttons: Ext.MessageBox.YESNO,
-                closeable: false,
-                icon: Ext.Msg.QUESTION,
-                animateTarget: cmp,
-                fn: async function (choose) {
-                    if (choose === 'yes') {
-                        let mySync = await store.Sync();
-                        if (mySync instanceof Error) {
-                            console.log(mySync)
-                        } else {
-                            console.log('SUCCESS', mySync);
-                            await store.Load();
-                        }
                     }
                 }
             });

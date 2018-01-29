@@ -19,7 +19,7 @@ Ext.define('A.controller.master.Code', {
         'masterCode grid': {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
-            select: 'selectRow',
+            select: 'selectRow'
         },
         'masterCode grid dataview': {
             refresh: 'refreshView'

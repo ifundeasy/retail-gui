@@ -19,7 +19,7 @@ Ext.define('A.controller.master.Discount', {
         'masterDiscount grid': {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
-            select: 'selectRow',
+            select: 'selectRow'
         },
         'masterDiscount grid dataview': {
             refresh: 'refreshView'

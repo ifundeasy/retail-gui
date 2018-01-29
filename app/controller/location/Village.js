@@ -19,7 +19,7 @@ Ext.define('A.controller.location.Village', {
         'masterVillage grid': {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
-            select: 'selectRow',
+            select: 'selectRow'
         },
         'masterVillage grid dataview': {
             refresh: 'refreshView'

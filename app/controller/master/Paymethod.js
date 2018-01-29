@@ -19,7 +19,7 @@ Ext.define('A.controller.master.Paymethod', {
         'masterPaymethod grid': {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
-            select: 'selectRow',
+            select: 'selectRow'
         },
         'masterPaymethod grid dataview': {
             refresh: 'refreshView'

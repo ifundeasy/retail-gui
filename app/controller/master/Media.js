@@ -19,7 +19,7 @@ Ext.define('A.controller.master.Media', {
         'masterMedia grid': {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
-            select: 'selectRow',
+            select: 'selectRow'
         },
         'masterMedia grid dataview': {
             refresh: 'refreshView'

@@ -19,7 +19,7 @@ Ext.define('A.controller.master.Unit', {
         'masterUnit grid': {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
-            select: 'selectRow',
+            select: 'selectRow'
         },
         'masterUnit grid dataview': {
             refresh: 'refreshView'

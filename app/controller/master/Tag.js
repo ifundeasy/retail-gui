@@ -19,7 +19,7 @@ Ext.define('A.controller.master.Tag', {
         'masterTag grid': {
             afterrender: 'addedGrid',
             deselect: 'deselectRow',
-            select: 'selectRow',
+            select: 'selectRow'
         },
         'masterTag grid dataview': {
             refresh: 'refreshView'
