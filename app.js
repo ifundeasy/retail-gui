@@ -46,12 +46,12 @@ Ext.onReady(function () {
                 }
             });
         };
-        
         Ext.application({
             name: 'A',
             appFolder: 'app',
             controllers: ['Core'],
             version: base.version,
+            moneyStep: base.moneyStep,
             title: name,
             enableQuickTips: true,
             backend, ajax,
