@@ -8,8 +8,15 @@ Ext.define('A.controller.Navigation', {
     ],
     events: {
         'navigation': {
-            cellclick: 'onClickModule'
+            cellclick: 'onClickModule',
+            collapse: 'onCollapseChange',
+            expand: 'onCollapseChange'
         }
+    },
+    onCollapseChange: function (panel) {
+        let me = this;
+        let collapsed = panel.collapsed;
+        localStorage[me.isCollapsedNav] = collapsed ? true : false;
     },
     loadModule: function () {
         let {data} = this.application.backend;
@@ -135,6 +142,12 @@ Ext.define('A.controller.Navigation', {
             let node = me.getNavView().getStore().getById(value);
             this.onClickModule(me.getNavView(), 0, 0, node);
         }
+
+        if (localStorage[me.isCollapsedNav] === 'true' ? 1 : 0) {
+            me.getNavView().collapse()
+        } else {
+            me.getNavView().expand()
+        }
     },
     init: function () {
         let me = this;
@@ -149,6 +162,7 @@ Ext.define('A.controller.Navigation', {
         }
         me.control(me.events);
         me.historyKey = me.application.backend.storageKey + '-modules';
+        me.isCollapsedNav = me.application.backend.storageKey + '-collapsed-nav';
 
         me.setModules();
     },

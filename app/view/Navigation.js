@@ -14,6 +14,7 @@ Ext.define('A.view.Navigation', {
     autoScroll: true,
     rootVisible: false,
     animate: true,
+    titleCollapse: true,
     icon: 'img/icons/essential/png/unlocked-2.png',
     iconCls: 'icon-bg',
 });
