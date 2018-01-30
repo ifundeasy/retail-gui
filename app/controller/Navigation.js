@@ -1,12 +1,3 @@
-Ext.define('Search', {
-    fields: ['id', 'query'],
-    extend: 'Ext.data.Model',
-    proxy: {
-        type: 'localstorage',
-        id: 'apan-seh'
-    }
-});
-var e = Ext.create('Search');
 Ext.require('A.store.Rest');
 Ext.define('A.controller.Navigation', {
     extend: 'Ext.app.Controller',
