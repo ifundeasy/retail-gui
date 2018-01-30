@@ -59,6 +59,7 @@ Ext.define('A.view.master.Discount', {
                         {
                             text: 'Status',
                             dataIndex: 'status_id',
+                            dataSearch: 'status_name',
                             minWidth: 100,
                             autoSizeColumn: true,
                             renderer: function (val, meta, record, rowIndex) {

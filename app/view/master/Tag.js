@@ -34,6 +34,7 @@ Ext.define('A.view.master.Tag', {
                         {
                             text: 'Parent',
                             dataIndex: 'tag_id',
+                            dataSearch: 'tag_name',
                             minWidth: 100,
                             autoSizeColumn: true,
                             renderer: function (val, meta, record, rowIndex) {
@@ -53,6 +54,7 @@ Ext.define('A.view.master.Tag', {
                         {
                             text: 'Status',
                             dataIndex: 'status_id',
+                            dataSearch: 'status_name',
                             minWidth: 100,
                             autoSizeColumn: true,
                             renderer: function (val, meta, record, rowIndex) {

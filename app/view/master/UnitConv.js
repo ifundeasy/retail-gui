@@ -28,6 +28,7 @@ Ext.define('A.view.master.UnitConv', {
                         {
                             text: 'Unit Base',
                             dataIndex: 'base_id',
+                            dataSearch: 'base_name',
                             minWidth: 100,
                             autoSizeColumn: true,
                             renderer: function (val, meta, record, rowIndex) {
@@ -50,6 +51,7 @@ Ext.define('A.view.master.UnitConv', {
                         {
                             text: 'Unit',
                             dataIndex: 'unit_id',
+                            dataSearch: 'unit_name',
                             minWidth: 100,
                             autoSizeColumn: true,
                             renderer: function (val, meta, record, rowIndex) {
@@ -68,6 +70,7 @@ Ext.define('A.view.master.UnitConv', {
                         {
                             text: 'Status',
                             dataIndex: 'status_id',
+                            dataSearch: 'status_name',
                             minWidth: 100,
                             autoSizeColumn: true,
                             renderer: function (val, meta, record, rowIndex) {

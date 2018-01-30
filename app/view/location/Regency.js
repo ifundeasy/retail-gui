@@ -43,6 +43,7 @@ Ext.define('A.view.location.Regency', {
                         {
                             text: 'State',
                             dataIndex: 'state_id',
+                            dataSearch: 'state_name',
                             minWidth: 100,
                             autoSizeColumn: true,
                             renderer: function (val, meta, record, rowIndex) {
@@ -62,6 +63,7 @@ Ext.define('A.view.location.Regency', {
                         {
                             text: 'Status',
                             dataIndex: 'status_id',
+                            dataSearch: 'status_name',
                             minWidth: 100,
                             autoSizeColumn: true,
                             renderer: function (val, meta, record, rowIndex) {

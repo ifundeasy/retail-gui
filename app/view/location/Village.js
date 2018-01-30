@@ -43,6 +43,7 @@ Ext.define('A.view.location.Village', {
                         {
                             text: 'District',
                             dataIndex: 'district_id',
+                            dataSearch: 'district_name',
                             minWidth: 100,
                             autoSizeColumn: true,
                             renderer: function (val, meta, record, rowIndex) {
@@ -62,6 +63,7 @@ Ext.define('A.view.location.Village', {
                         {
                             text: 'Status',
                             dataIndex: 'status_id',
+                            dataSearch: 'status_name',
                             minWidth: 100,
                             autoSizeColumn: true,
                             renderer: function (val, meta, record, rowIndex) {
