@@ -1,9 +1,10 @@
 Ext.define('A.view.master.ProductWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.productWindow',
-    closable: false,
-    resizable: false,
-    draggable: false,
+    closeAction: 'hide',
+    closable: true,
+    resizable: true,
+    draggable: true,
     width: 600,
     height: 400,
     layout: {type: 'vbox', align: 'stretch'},
@@ -61,8 +62,6 @@ Ext.define('A.view.master.ProductWindow', {
                                     xtype: 'suggestbox',
                                     displayField: 'name',
                                     valueField: 'id',
-                                    growMin: 323,
-                                    pageSize: 20,
                                     store: Parent
                                 }
                             ]
@@ -83,8 +82,6 @@ Ext.define('A.view.master.ProductWindow', {
                                     xtype: 'suggestbox',
                                     displayField: 'name',
                                     valueField: 'id',
-                                    growMin: 323,
-                                    pageSize: 20,
                                     store: Brand
                                 },
                                 {
@@ -111,8 +108,6 @@ Ext.define('A.view.master.ProductWindow', {
                                     xtype: 'suggestbox',
                                     displayField: 'name',
                                     valueField: 'id',
-                                    growMin: 323,
-                                    pageSize: 20,
                                     store: Status
                                 }
                             ]
