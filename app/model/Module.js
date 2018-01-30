@@ -1,5 +1,5 @@
-Ext.define('A.model.Status', {
-    extend: 'Ext.data.Module',
+Ext.define('A.model.Module', {
+    extend: 'Ext.data.Model',
     pathURL: '/api/module',
     fields: [
         {name: 'id', type: 'int'},
