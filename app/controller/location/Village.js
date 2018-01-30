@@ -58,9 +58,7 @@ Ext.define('A.controller.location.Village', {
             if (el !== -1) $or.push({[el]: {$like: `%${value}%`}})
         });
 
-        store.proxy.extraParams = value && $or.length ? {filter: JSON.stringify({$or})} : null;
-
-        await store.Load();
+        await store.Filter(value && $or.length ? {$or} : null);
         me.ready4Filter = true;
     },
     addedSearchField: function () {

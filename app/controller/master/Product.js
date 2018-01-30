@@ -60,14 +60,8 @@ Ext.define('A.controller.master.Product', {
         let store = me.getMyGrid().getStore();
         let fields = me.getMySearchField().getValue() || [];
         let value = me.getMySearchValue().getValue();
-        let eParams, filter = {};
-        let $or = [];
+        let filter = store.getFilter() || {}, $or = [];
 
-        try {
-            filter = JSON.parse(store.proxy.extraParams.filter);
-        } catch (e) {
-            //
-        }
         fields.forEach(function (el) {
             if (el !== -1) $or.push({[el]: {$like: `%${value}%`}})
         });
@@ -75,11 +69,7 @@ Ext.define('A.controller.master.Product', {
         if (value && $or.length) filter['$or'] = $or;
         else delete filter['$or'];
 
-        if (Object.keys(filter).length) {
-            store.proxy.extraParams = {filter: JSON.stringify(filter)};
-        }
-
-        await store.Load();
+        await store.Filter(Object.keys(filter).length ? filter : null);
         me.ready4Filter = true;
     },
     addedSearchField: function () {
@@ -162,8 +152,7 @@ Ext.define('A.controller.master.Product', {
                         items.forEach(function (item) {
                             $in.push(item.get('id'))
                         });
-                        Product.proxy.extraParams = {filter: JSON.stringify({id: {$in}})};
-                        await Product.Load();
+                        await Product.Filter({id: {$in}});
                         Product.removeAll();
                         grid.getStore().remove(items);
                     }
@@ -193,9 +182,7 @@ Ext.define('A.controller.master.Product', {
                             console.log(mySync)
                         } else {
                             console.log('SUCCESS', mySync);
-                            Product.proxy.extraParams = {};
-                            Product.Load();
-
+                            Product.Filter();
                             await store.Load();
                         }
                     }
@@ -215,31 +202,25 @@ Ext.define('A.controller.master.Product', {
         let {Unit, Type, Brand, Product, ProductPrice} = grid.up('masterProduct').stores;
         let store = grid.getStore();
 
-        Type.proxy.extraParams = {
-            filter: JSON.stringify({
-                name: {
-                    $or: [
-                        {$like: '%jual%'},
-                        {$like: '%sale%'}
-                    ]
-                }
-            })
-        };
-        await Type.Load();
+        await Type.Filter({
+            name: {
+                $or: [
+                    {$like: '%jual%'},
+                    {$like: '%sale%'}
+                ]
+            }
+        });
 
         this.type_id = Type.getAt(0).get('id');
-        store.proxy.extraParams = {
-            filter: JSON.stringify({
-                type_id: this.type_id
-            })
-        };
 
         await Product.Load();
         await Unit.Load();
         await Brand.Load();
         await ProductPrice.Load();
 
-        store.sort('id', 'desc');
+        store.setFilter({
+            type_id: this.type_id
+        }).sort('id', 'desc');
     },
     init: function () {
         let me = this;
