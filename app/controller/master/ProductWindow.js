@@ -16,6 +16,7 @@ Ext.define('A.controller.master.ProductWindow', {
     ],
     events: {
         'productWindow ' : {
+            afterrender: 'afterrender',
             show: 'show'
         },
         'productWindow button[action=save]': {
@@ -33,10 +34,9 @@ Ext.define('A.controller.master.ProductWindow', {
         'productWindow tabpanel' : {
             afterrender: 'afterrenderTabpanel'
         },
-        'productWindow grid': {
-            deselect: 'deselectRow',
-            //itemclick: 'clickForSelect',
-            select: 'selectRow'
+        'productWindow grid[prop="productPrice"]': {
+            selectionchange: 'selectionchangeGridPrice',
+            itemclick: 'clickRGridPrice'
         },
         'productWindow grid dataview': {
             refresh: 'refreshView'
@@ -53,12 +53,9 @@ Ext.define('A.controller.master.ProductWindow', {
         let id = record.get('id');
         let data = record.getData();
         let {
-            Type, Brand, Parent, Product, ProductCode, ProductTag,
-            ProductPrice, ProductPriceDisc, ProductPriceTax, Status,
-            ProductInfo, Tag, Unit, Tax, Discount
+            Product, ProductCode, ProductTag,
+            ProductPrice, ProductPriceDisc, ProductPriceTax
         } = this.stores;
-
-        if (Type.proxy.extraParams) Type.proxy.extraParams = {};
 
         me.getWindow().setTitle(`Product: "${data.name}"`);
         me.getFieldId().setValue(data.id);
@@ -67,29 +64,47 @@ Ext.define('A.controller.master.ProductWindow', {
         me.getFieldName().setValue(data.name);
         me.getFieldStatus().setValue(data.status_id);
 
+        Product.Filter({id});
+        ProductCode.setFilter({product_id: id}).Sort('id', 'DESC');
+        ProductTag.setFilter({product_id: id}).Sort('id', 'DESC');
+
+        await ProductPrice.setFilter({product_id: id}).Sort('id', 'DESC');
+
+        let $in = ProductPrice.data.keys;
+        ProductPriceTax.setFilter({productPrice_id: {$in}}).Sort('id', 'DESC');
+        ProductPriceDisc.setFilter({productPrice_id: {$in}}).Sort('id', 'DESC');
+    },
+    afterrender: async function (window) {
+        let me = this;
+        let {
+            Type, Brand, Status, Tag, Unit, Tax, Discount,
+            ProductPriceDisc, ProductPriceTax
+        } = me.stores = window.stores;
+
+        let filtering = function () {
+            let grid = me.getGridPrice();
+            let selection = grid.getSelectionModel().getSelection();
+            let ids = grid.getStore().data.keys;
+            let $in = selection.map(function (rec) {
+                return rec.get('id')
+            });
+
+            $in = $in.length ? $in : ids;
+            this.setFilter({productPrice_id: {$in}});
+        };
+
+        ProductPriceTax.on('beforeload', filtering);
+        ProductPriceDisc.on('beforeload', filtering);
+
         Tag.Load();
         Unit.Load();
         Tax.Load();
         Discount.Load();
-        Type.Load();
+        Type.setFilter().Load();
         Status.Load();
         Brand.Load();
-
-        Product.proxy.extraParams = {filter: JSON.stringify({id})};
-        ProductCode.proxy.extraParams = {filter: JSON.stringify({product_id: id})};
-        ProductTag.proxy.extraParams = {filter: JSON.stringify({product_id: id})};
-        ProductPrice.proxy.extraParams = {filter: JSON.stringify({product_id: id})};
-        Product.Load();
-        ProductCode.Sort('id', 'DESC');
-        ProductTag.Sort('id', 'DESC');
-        await ProductPrice.Sort('id', 'DESC');
-        ProductPriceDisc.proxy.extraParams = {filter: JSON.stringify({productPrice_id: {$in: ProductPrice.data.keys}})};
-        ProductPriceTax.proxy.extraParams = {filter: JSON.stringify({productPrice_id: {$in: ProductPrice.data.keys}})};
-        ProductPriceDisc.Sort('id', 'DESC');
-        ProductPriceTax.Sort('id', 'DESC');
     },
-    show: async function () {
-        let window = this.getWindow();
+    show: async function (window) {
         let parent = window.up();
         let pos = parent.getPosition();
         let width = parent.getWidth() - 20,
@@ -98,8 +113,6 @@ Ext.define('A.controller.master.ProductWindow', {
         window.setLocalXY(pos[0] + 10, pos[1] + 10, true);
         window.setWidth(width);
         window.setHeight(height);
-
-        this.stores = window.stores;
 
         if (this.params.record.get('id')) {
             let {index, record, store} = this.params;
@@ -139,6 +152,12 @@ Ext.define('A.controller.master.ProductWindow', {
         let {ProductInfo, Product, ProductCode, ProductTag, ProductPrice, ProductPriceTax, ProductPriceDisc} = this.stores;
         let product = Product.getAt(0);
         let id = product.get('id');
+        let configMsg = {
+            title: 'Save Product',
+            msg: 'Nothing to be saved!',
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.WARNING
+        };
 
         btn.setDisabled(1);
 
@@ -177,8 +196,13 @@ Ext.define('A.controller.master.ProductWindow', {
 
         let saveAny = me.shouldSave.indexOf(true) > -1;
 
-        if (saveAny) await ProductInfo.Load();
+        if (saveAny) {
+            configMsg.icon = Ext.Msg.INFO;
+            configMsg.msg = 'Saving success';
+            await ProductInfo.Load();
+        }
 
+        Ext.Msg.show(configMsg);
         btn.setDisabled(0);
     },
     clickCloseBtn: function () {
@@ -254,36 +278,17 @@ Ext.define('A.controller.master.ProductWindow', {
         }
 
     },
-    deselectRow: async function (model, record, index) {
+    selectionchangeGridPrice: function (model, record, index) {
         let me = this;
-        let clsName = record.store.model.$className;
-        if (clsName === 'A.model.ProductPrice') {
-            let selection = me.getGridPrice().getSelectionModel().getSelection();
-            let {ProductPrice, ProductPriceTax, ProductPriceDisc} = this.stores;
+        let {ProductPriceTax, ProductPriceDisc} = me.stores;
 
-            if (!selection.length) {
-                ProductPriceTax.proxy.extraParams = {filter: JSON.stringify({productPrice_id: {$in: ProductPrice.data.keys}})};
-                ProductPriceDisc.proxy.extraParams = {filter: JSON.stringify({productPrice_id: {$in: ProductPrice.data.keys}})};
-            }
-        }
+        ProductPriceTax.Load();
+        ProductPriceDisc.Load();
     },
-    selectRow: async function (model, record, index) {
-        let clsName = record.store.model.$className;
-
-        if (clsName === 'A.model.ProductPrice') {
-            let {ProductPrice, ProductPriceTax, ProductPriceDisc} = this.stores;
-            let selection = this.getGridPrice().getSelectionModel().getSelection();
-            if (selection.length === 1) {
-                ProductPriceTax.proxy.extraParams = {filter: JSON.stringify({productPrice_id: record.get('id')})};
-                ProductPriceDisc.proxy.extraParams = {filter: JSON.stringify({productPrice_id: record.get('id')})};
-            } else {
-                ProductPriceTax.proxy.extraParams = {filter: JSON.stringify({productPrice_id: {$in: ProductPrice.data.keys}})};
-                ProductPriceDisc.proxy.extraParams = {filter: JSON.stringify({productPrice_id: {$in: ProductPrice.data.keys}})};
-            }
+    clickRGridPrice: function (grid, rec, gridview, index, event) {
+        if (event.target.className !== 'x-grid-row-checker') {
+            grid.getSelectionModel().select(index);
         }
-    },
-    clickForSelect: function (grid, rec, gridview, index) {
-        grid.getSelectionModel().select(index);
     },
     addRow: async function (btn, event) {
         let me = this;
