@@ -98,11 +98,15 @@ Ext.define('A.controller.master.Product', {
         if (dataview.panel) {
             Ext.each(dataview.panel.columns, function (column) {
                 if (column.autoSizeColumn === true) {
-                    column.autoSize();
+                    try {
+                        column.autoSize();
+                        column.setWidth(column.width +  5)
+                    } catch (e) {
+                        //
+                    }
                 }
             })
         }
-
     },
     doubleClickItem: function (gridView, record, dom, index, event) {
         this.showWindow(index, record, gridView, event);

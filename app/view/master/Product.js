@@ -44,18 +44,29 @@ Ext.define('A.view.master.Product', {
         //
         let columns = [
             //new Ext.grid.RowNumberer(),
-            {text: 'ID', dataIndex: 'id', minWidth: 60, autoSizeColumn: true},
+            {
+                text: 'ID',
+                dataIndex: 'id',
+                minWidth: 60,
+                autoSizeColumn: true,
+                lockable: true,
+                locked: true
+            },
             {
                 text: 'Name',
                 dataIndex: 'name',
                 minWidth: 100,
-                autoSizeColumn: true
+                autoSizeColumn: true,
+                lockable: true,
+                locked: true
             },
             {
                 text: 'Code',
                 dataIndex: 'productCode_code',
                 minWidth: 100,
-                autoSizeColumn: true
+                autoSizeColumn: true,
+                lockable: true,
+                locked: true
             },
             {
                 text: 'Sales Price',
