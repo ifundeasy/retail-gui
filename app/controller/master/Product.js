@@ -78,9 +78,9 @@ Ext.define('A.controller.master.Product', {
         let searchField = this.getMySearchField();
         keyValueStore.insert(0, {key: -1, value: 'All'});
         columns.forEach(function (col, i) {
-            if (col.dataIndex) {
-                keyValueStore.insert(i + 1, {key: col.dataIndex, value: col.text})
-            }
+            let key = col.dataIndex;
+            if (col.dataSearch) key = col.dataSearch;
+            if (key) keyValueStore.insert(i + 1, {key, value: col.text});
         });
         searchField.bindStore(keyValueStore);
     },
