@@ -41,6 +41,15 @@ Ext.define('A.store.Rest', {
             }
         }
     },
+    getFilter: function () {
+        let filter, self = this;
+        try {
+            filter = JSON.parse(self.proxy.extraParams.filter);
+        } catch (e) {
+            //
+        }
+        return filter;
+    },
     setFilter: function (criteria) {
         if (criteria) {
             this.proxy.extraParams.filter = JSON.stringify(criteria);
