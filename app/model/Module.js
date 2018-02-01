@@ -13,6 +13,7 @@ Ext.define('A.model.Module', {
         {name: 'name', type: 'string'},
         {name: 'class', type: 'string'},
         {name: 'seq', type: 'int'},
+        {name: 'collapsed', type: 'string'},
         {name: 'status_id', type: 'int'},
         {name: 'status_name', type: 'string'},
         {name: 'status_notes', type: 'string'},
@@ -31,6 +32,7 @@ Ext.define('A.model.Module', {
         {name: 'name', type: 'string'},
         {name: 'class', type: 'string'},
         {name: 'seq', type: 'int'},
+        {name: 'collapsed', type: 'int'},
         {name: 'status_id', type: 'int'},
         {name: 'notes', type: 'string'}
     ]
