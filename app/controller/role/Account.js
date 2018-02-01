@@ -1,7 +1,9 @@
 Ext.define('A.controller.role.Account', {
     extend: 'Ext.app.Controller',
-    views: ['role.Account'],
+    requires: ['A.controller.role.AccountWindow'],
+    views: ['role.Account', 'role.AccountWindow'],
     refs: [
+        {ref: 'myEditable', selector: 'masterAccount accountWindow'},
         {ref: 'myAccountParent', selector: 'masterAccount grid[prop="accountParent"]'}
     ],
     ready4Filter: true,
@@ -18,29 +20,32 @@ Ext.define('A.controller.role.Account', {
             afterrender: 'addedSearchField'
         },
         'masterAccount grid[prop="accountParent"]': {
-            itemdblclick: 'dblclickGrid'
-        },
-        'masterAccount grid': {
+            itemdblclick: 'dblclickGrid',
             afterrender: 'addedGrid'
         },
-        'masterAccount grid dataview': {
+        'masterAccount grid[prop="accountParent"] dataview': {
             refresh: 'refreshView'
         },
-        'masterAccount actioncolumn[todo="edit"]': {
+        'masterAccount grid[prop="accountParent"] actioncolumn[todo="edit"]': {
             click: 'editRow'
         },
-        'masterAccount actioncolumn[todo="delete"]': {
+        'masterAccount grid[prop="accountParent"] actioncolumn[todo="delete"]': {
             click: 'deleteRow'
         },
-        'masterAccount toolbar button[todo="add"]': {
+        'masterAccount grid[prop="accountParent"] toolbar button[todo="add"]': {
             click: 'addRow'
         },
-        'masterAccount toolbar button[todo="delete"]': {
+        'masterAccount grid[prop="accountParent"] toolbar button[todo="delete"]': {
             click: 'deleteRows'
         },
-        'masterAccount toolbar button[todo="save"]': {
+        'masterAccount grid[prop="accountParent"] toolbar button[todo="save"]': {
             click: 'saveRows'
         }
+    },
+    showWindow: function (index, record, gridView, event) {
+        let window = this.getMyEditable();
+        this.windowCtrl.params = {index, record, store: record.store};
+        window.show();
     },
     changeName: function (cmp) {
         let value = cmp.getValue();
@@ -104,10 +109,7 @@ Ext.define('A.controller.role.Account', {
         });
     },
     editRow: function (gridview, rowIndex, colIndex, item, e, record) {
-        gridview.ownerCt.plugins[0].startEditByPosition({
-            row: record,
-            column: 2
-        });
+        this.showWindow(rowIndex, record, gridview, event);
     },
     deleteRow: function (gridview, rowIndex, colIndex, item, e, record) {
         let grid = gridview.ownerCt;
@@ -196,8 +198,8 @@ Ext.define('A.controller.role.Account', {
         if ($in.length) filter = {module_id: {$in}};
         store.setFilter(filter).load({params});
     },
-    dblclickGrid: function (grid, rec, gridview, index, event) {
-        console.log('show window!')
+    dblclickGrid: function (grid, record, gridview, index, event) {
+        this.showWindow(index, record, gridview, event);
     },
     addedGrid: async function (grid) {
         let store = grid.getStore();
@@ -214,5 +216,8 @@ Ext.define('A.controller.role.Account', {
             }
         }
         me.control(me.events);
+        //
+        this.windowCtrl = Ext.create('A.controller.role.AccountWindow');
+        this.windowCtrl.init();
     }
 });

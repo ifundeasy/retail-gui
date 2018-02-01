@@ -4,6 +4,10 @@ Ext.require([
     'A.model.Actor',
     'A.model.Status',
     'A.model.Village',
+    'A.model.District',
+    'A.model.Regency',
+    'A.model.State',
+    'A.model.National',
     'A.model.Person',
     'A.model.PersonActor',
     'A.model.PersonAddress',
@@ -22,6 +26,10 @@ Ext.define('A.view.role.Account', {
         let Actor = Ext.create('A.store.Rest', {model: 'A.model.Actor'});
         let Status = Ext.create('A.store.Rest', {model: 'A.model.Status'});
         let Village = Ext.create('A.store.Rest', {model: 'A.model.Village'});
+        let District = Ext.create('A.store.Rest', {model: 'A.model.District'});
+        let Regency = Ext.create('A.store.Rest', {model: 'A.model.Regency'});
+        let State = Ext.create('A.store.Rest', {model: 'A.model.State'});
+        let National = Ext.create('A.store.Rest', {model: 'A.model.National'});
         let Person = Ext.create('A.store.Rest', {model: 'A.model.Person'});
         let PersonActor = Ext.create('A.store.Rest', {model: 'A.model.PersonActor'});
         let PersonAddress = Ext.create('A.store.Rest', {model: 'A.model.PersonAddress'});
@@ -30,8 +38,9 @@ Ext.define('A.view.role.Account', {
         let genderStore = Ext.create('A.store.Gender');
         let stores = {
             Media, Contact, Actor, Status,
-            Village, Person, PersonActor,
-            PersonAddress, PersonContact, PersonSession
+            Village, District, Regency, Person, State, National,
+            PersonActor, PersonAddress, PersonContact,
+            PersonSession, genderStore
         };
         //
         let columns = [
@@ -180,12 +189,12 @@ Ext.define('A.view.role.Account', {
                 }
             ]
         };
-        //let personWindow = Ext.create('A.view.master.AccountWindow', {stores});
+        let accountWindow = Ext.create('A.view.role.AccountWindow', {stores});
 
         this.stores = stores;
         Ext.apply(this, {
             items: [
-                //personWindow,
+                accountWindow,
                 Ext.create('Ext.grid.Panel', {
                     loadMask: true,
                     prop: 'accountParent',
