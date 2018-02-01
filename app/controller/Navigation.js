@@ -23,11 +23,8 @@ Ext.define('A.controller.Navigation', {
             id: 0,
             name: 'Profile',
             class: 'profile',
-            parent: null,
             seq: 1,
-            text: 'Profile',
-            expanded: true,
-            leaf: true
+            text: 'Profile'
         };
         let {data} = this.application.backend;
         let modules = Object.assign({0: profile}, data.modules);
@@ -66,7 +63,11 @@ Ext.define('A.controller.Navigation', {
                     return a.seq - b.seq
                 })
             } else {
-                node.leaf = false;
+                let hasChildren = Object.keys(modules).filter(function (n) {
+                    if (modules[n].parent === node.id) return 1;
+                    return 0
+                });
+                node.leaf = !hasChildren.length && !node.parent ? true : false;
             }
         }
         for (let m in modules) {
