@@ -19,8 +19,18 @@ Ext.define('A.controller.Navigation', {
         localStorage[me.isCollapsedNav] = collapsed ? true : false;
     },
     loadModule: function () {
+        let profile = {
+            id: 0,
+            name: 'Profile',
+            class: 'profile',
+            parent: null,
+            seq: 1,
+            text: 'Profile',
+            expanded: true,
+            leaf: true
+        };
         let {data} = this.application.backend;
-        let modules = Object.assign({}, data.modules);
+        let modules = Object.assign({0: profile}, data.modules);
 
         data.menus = {
             text: 'Module',
@@ -151,6 +161,9 @@ Ext.define('A.controller.Navigation', {
     },
     init: function () {
         let me = this;
+        let {backend} = me.application;
+        let {storageKey} = backend;
+        let userId = backend.data.user.id;
 
         for (let query in me.events) {
             let events = me.events[query];
@@ -161,8 +174,8 @@ Ext.define('A.controller.Navigation', {
             }
         }
         me.control(me.events);
-        me.historyKey = me.application.backend.storageKey + '-modules';
-        me.isCollapsedNav = me.application.backend.storageKey + '-collapsed-nav';
+        me.historyKey = storageKey + '-modules-' + userId;
+        me.isCollapsedNav = storageKey + '-collapsed-nav-' + userId;
 
         me.setModules();
     },
