@@ -1,7 +1,6 @@
 Ext.require([
     'A.model.HttpMethod',
-    'A.model.Status',
-    'A.store.Table'
+    'A.model.Status'
 ]);
 Ext.define('A.view.role.Reqmethod', {
     extend: 'Ext.panel.Panel',
