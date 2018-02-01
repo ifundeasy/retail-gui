@@ -1,7 +1,6 @@
 Ext.require([
     'A.model.Actor',
-    'A.model.Status',
-    'A.store.Table'
+    'A.model.Status'
 ]);
 Ext.define('A.view.role.Actor', {
     extend: 'Ext.panel.Panel',
