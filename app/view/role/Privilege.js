@@ -2,8 +2,7 @@ Ext.require([
     'A.model.Privilege',
     'A.model.Actor',
     'A.model.Module',
-    'A.model.Status',
-    'A.store.Table'
+    'A.model.Status'
 ]);
 Ext.define('A.view.role.Privilege', {
     extend: 'Ext.panel.Panel',
