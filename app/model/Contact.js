@@ -3,7 +3,7 @@ Ext.define('A.model.Contact', {
     pathURL: '/api/contact',
     fields: [
         {name: 'id', type: 'int'},
-        {name: 'value', type: 'string'},
+        {name: 'name', type: 'string'},
         {name: 'status_id', type: 'int'},
         {name: 'status_name', type: 'string'},
         {name: 'status_notes', type: 'string'},
@@ -18,7 +18,7 @@ Ext.define('A.model.Contact', {
     ],
     writer: [
         {name: 'id', type: 'int'},
-        {name: 'value', type: 'string'},
+        {name: 'name', type: 'string'},
         {name: 'status_id', type: 'int'},
         {name: 'notes', type: 'string'}
     ]
