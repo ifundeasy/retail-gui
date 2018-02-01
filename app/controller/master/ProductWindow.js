@@ -170,6 +170,7 @@ Ext.define('A.controller.master.ProductWindow', {
         });
 
         if (me.shouldSync(Product)) {
+            me.getWindow().setTitle(`Product: "${me.getFieldName().getValue()}"`);
             await Product.Sync();
             await Product.Load();
         }
