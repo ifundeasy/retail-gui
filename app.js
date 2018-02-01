@@ -28,6 +28,11 @@ Ext.onReady(function () {
 
         $('title').text(backend.name);
 
+        Ext.override(Ext, {
+            selector: function (string) {
+                return Ext.ComponentQuery.query(string)
+            }
+        });
         Ext.app.Application.prototype.addController = function (classPath, opts) {
             let self = this, config = opts || {};
 
