@@ -63,7 +63,9 @@ Ext.define('A.view.role.Privilege', {
                                 xtype: 'suggestbox',
                                 displayField: 'name',
                                 valueField: 'id',
-                                editable: false,
+                                editable: true,
+                                growMin: 323,
+                                pageSize: 20,
                                 store: moduleStore
                             }
                         },

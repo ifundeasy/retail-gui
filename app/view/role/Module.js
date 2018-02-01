@@ -3,6 +3,7 @@ Ext.require([
     'A.model.ModuleRoute',
     'A.model.HttpMethod',
     'A.model.Status',
+    'A.store.Table',
     'A.store.YesNo'
 ]);
 Ext.define('A.view.role.Module', {
@@ -15,6 +16,7 @@ Ext.define('A.view.role.Module', {
         let routeStore = Ext.create('A.store.Rest', {model: 'A.model.ModuleRoute'});
         let httpMethodStore = Ext.create('A.store.Rest', {model: 'A.model.HttpMethod'});
         let statusStore = Ext.create('A.store.Rest', {model: 'A.model.Status'});
+        let tableStore = Ext.create('A.store.Table');
         let navigation = {
             xtype: 'toolbar',
             dock: 'top',
@@ -247,7 +249,13 @@ Ext.define('A.view.role.Module', {
                                     dataIndex: 'TABLENAME',
                                     minWidth: 100,
                                     autoSizeColumn: true,
-                                    editor: {xtype: 'textfield'}
+                                    editor: {
+                                        xtype: 'suggestbox',
+                                        store: Ext.create('A.store.Table'),
+                                        displayField: 'name',
+                                        valueField: 'name',
+                                        growMin: 323
+                                    }
                                 },
                                 {
                                     text: 'Path',
