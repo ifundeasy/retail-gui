@@ -15,7 +15,7 @@ Ext.define('A.model.PersonContact', {
         {name: 'person_status_id', type: 'int'},
         {name: 'person_notes', type: 'string'},
         {name: 'contact_id', type: 'int'},
-        {name: 'contact_value', type: 'string'},
+        {name: 'contact_name', type: 'string'},
         {name: 'contact_status_id', type: 'int'},
         {name: 'contact_notes', type: 'string'},
         {name: 'status_id', type: 'int'},
