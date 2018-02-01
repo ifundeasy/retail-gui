@@ -24,13 +24,13 @@ Ext.define('A.controller.master.Product', {
             select: 'selectRow',
             itemdblclick: 'doubleClickItem'
         },
-        'masterProduct grid dataview': {
+        'masterProduct grid[prop="productInfo"] dataview': {
             refresh: 'refreshView'
         },
-        'masterProduct actioncolumn[todo="edit"]': {
+        'masterProduct grid[prop="productInfo"] actioncolumn[todo="edit"]': {
             click: 'editRow'
         },
-        'masterProduct actioncolumn[todo="delete"]': {
+        'masterProduct grid[prop="productInfo"] actioncolumn[todo="delete"]': {
             click: 'deleteRow'
         },
         'masterProduct grid[prop="productInfo"] toolbar button[todo="add"]': {
