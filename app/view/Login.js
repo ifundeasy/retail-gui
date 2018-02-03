@@ -26,25 +26,24 @@ Ext.define('A.view.Login', {
                     plain: true,
                     bodyBorder: false,
                     bodyPadding: 10,
+                    defaults: {
+                        xtype: 'textfield',
+                        anchor: '100%',
+                        labelSeparator: '',
+                        allowBlank: false
+                    },
                     items: [
                         {
                             itemId: 'username',
-                            xtype: 'textfield',
                             fieldLabel: 'Username',
                             name: 'username',
-                            allowBlank: false,
-                            anchor: '100%',
                             selectOnFocus: true
                         },
                         {
                             itemId: 'password',
-                            xtype: 'textfield',
                             fieldLabel: 'Password',
                             name: 'password',
-                            allowBlank: false,
-                            inputType: 'password',
-                            anchor: '100%',
-                            selectOnFocus: true
+                            inputType: 'password'
                         }
                     ],
                 }
