@@ -81,7 +81,7 @@ Ext.define('A.controller.role.AccountWindow', {
                             state_id: state.id,
                             state_name: state.name,
                             national_id: state.national_id,
-                            natinal_name: state.natinal_name
+                            national_name: state.national_name
                         });
                     }
                 }
