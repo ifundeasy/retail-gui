@@ -57,6 +57,7 @@ Ext.onReady(function () {
             controllers: ['Core'],
             version: base.version,
             moneyStep: base.moneyStep,
+            currency: base.currency,
             title: name,
             enableQuickTips: true,
             backend, ajax,
