@@ -40,3 +40,12 @@ input:-ms-input-placeholder {
     font-style: italic;
     color: rgba(255, 0, 28, 0.4) !important;
 }
+.right-text-align {
+    text-align: right
+}
+.row-body-tpl {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-size: smaller;
+    font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+}
