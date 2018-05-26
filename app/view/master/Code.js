@@ -45,6 +45,20 @@ Ext.define('A.view.master.Code', {
                             }
                         },
                         {
+                            text: 'W_FIELD_NAME',
+                            dataIndex: 'W_FIELD_NAME',
+                            minWidth: 140,
+                            autoSizeColumn: true,
+                            editor: {xtype: 'textfield'}
+                        },
+                        {
+                            text: 'W_FIELD_VALUE',
+                            dataIndex: 'W_FIELD_VALUE',
+                            minWidth: 140,
+                            autoSizeColumn: true,
+                            editor: {xtype: 'textfield'}
+                        },
+                        {
                             text: 'Counter',
                             dataIndex: 'count',
                             minWidth: 100,
