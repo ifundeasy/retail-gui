@@ -5,7 +5,7 @@ Ext.define('A.view.Navigation', {
     margins: '5 0 0 5',
     split: true,
     tabPosition: 'left',
-    width: 225,
+    width: 200,
     title: 'Navigation',
     collapsible: true,
     layout: 'fit',
