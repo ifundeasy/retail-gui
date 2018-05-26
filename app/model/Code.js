@@ -4,6 +4,8 @@ Ext.define('A.model.Code', {
     fields: [
         {name: 'id', type: 'int'},
         {name: 'TABLENAME', type: 'string'},
+        {name: 'W_FIELD_NAME', type: 'string'},
+        {name: 'W_FIELD_VALUE', type: 'string'},
         {name: 'value', type: 'string'},
         {name: 'count', type: 'int'},
         {name: 'status_id', type: 'int'},
@@ -21,6 +23,8 @@ Ext.define('A.model.Code', {
     writer: [
         {name: 'id', type: 'int'},
         {name: 'TABLENAME', type: 'string'},
+        {name: 'W_FIELD_NAME', type: 'string'},
+        {name: 'W_FIELD_VALUE', type: 'string'},
         {name: 'value', type: 'string'},
         {name: 'count', type: 'int'},
         {name: 'status_id', type: 'int'},
