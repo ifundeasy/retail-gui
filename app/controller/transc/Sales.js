@@ -4,16 +4,11 @@ Ext.define('A.controller.transc.Sales', {
     refs: [
         {ref: 'masterGrid', selector: 'transcsales grid[prop="salesmaster"]'},
         {ref: 'detailGrid', selector: 'transcsales grid[prop="salesdetail"]'},
-        {ref: 'infoGrid', selector: 'transcsales grid[prop="salesinfo"]'},
         {ref: 'totalItemsLabel', selector: 'transcsales grid[prop="salesdetail"] toolbar label[todo="totalitems"]'},
         {ref: 'totalMoneyLabel', selector: 'transcsales grid[prop="salesdetail"] toolbar label[todo="totalmoney"]'},
         {ref: 'productField', selector: 'transcsales grid[prop="salesdetail"] toolbar textfield[todo="valueFilter"]'},
         {ref: 'addProductBtn', selector: 'transcsales grid[prop="salesdetail"] toolbar button[todo="add"]'},
-        {ref: 'deleteProductsBtn', selector: 'transcsales grid[prop="salesdetail"] toolbar button[todo="remove"]'}
-        //{ref: 'voidProductsBtn', selector: 'transcsales grid[prop="salesdetail"] toolbar button[todo="void"]'},
-        //{ref: 'bonusProductsBtn', selector: 'transcsales grid[prop="salesdetail"] toolbar button[todo="bonus"]'},
-        //{ref: 'complimentaryProductsBtn', selector: 'transcsales grid[prop="salesdetail"] toolbar button[todo="complimentary"]'},
-        //{ref: 'sampleProductsBtn', selector: 'transcsales grid[prop="salesdetail"] toolbar button[todo="sample"]'}
+        {ref: 'deleteProductsBtn', selector: 'transcsales grid[prop="salesdetail"] toolbar button[todo="delete"]'}
     ],
     ready4Filter: true,
     events: {
@@ -27,24 +22,24 @@ Ext.define('A.controller.transc.Sales', {
             afterrender: 'addTransactionGrid',
             itemclick: 'selectTransaction'
         },
-        'transcsales grid[prop="salesdetail"]': {
-            itemclick: 'selectProduct'
-        },
         'transcsales grid[prop="salesmaster"] toolbar button[todo="add"]': {
             click: 'addTransaction'
         },
         'transcsales grid[prop="salesdetail"] toolbar button[todo="add"]': {
             click: 'addProduct'
         },
-        'transcsales grid[prop="salesdetail"] toolbar button[todo="remove"]': {
-            click: 'removeProducts'
+        'transcsales grid[prop="salesdetail"] toolbar button[todo="delete"]': {
+            click: 'deleteProducts'
         },
-        'transcsales grid[prop="salesdetail"] gridcolumn[todo="action"]': {
-            click: 'actionProduct'
+        'transcsales grid[prop="salesdetail"] gridcolumn[todo="delete"]': {
+            click: 'deleteProduct'
         },
+        'transcsales grid[prop="salesdetail"] gridcolumn[todo="misc"]': {
+            click: 'miscProduct'
+        }
     },
     pressedEnter: function (cmp, e) {
-        if (e.keyCode === 13) this.filterGrid();
+        if (e.keyCode === 13) this.addProduct();
     },
     refreshView: function (dataview) {
         if (dataview.panel) {
@@ -63,7 +58,7 @@ Ext.define('A.controller.transc.Sales', {
     addTransactionGrid: async function () {
         let me = this;
         let grid = me.getMasterGrid();
-        let {Unit, Type, Brand, Product, ProductPrice} = grid.up('transcsales').stores;
+        let {Type, SProduct} = grid.up('transcsales').stores;
         let store = grid.getStore();
         let pgtoolbar = grid.down('pagingtoolbar');
 
@@ -85,27 +80,19 @@ Ext.define('A.controller.transc.Sales', {
 
         this.type_id = Type.getAt(0).get('id');
 
-        await Product.Load();
-        await Unit.Load();
-        await Brand.Load();
-        await ProductPrice.Load();
+        SProduct.setFilter({type_id: this.type_id});
         store.setFilter({type_id: this.type_id}).sort('id', 'desc');
-    },
-    selectProduct: function (model, record, index) {
-        let grid = this.getInfoGrid();
-        let store = grid.getStore();
-        store.Filter({transItem_id: record.get('id')})
     },
     selectTransaction: async function (model, record, index) {
         let grid = this.getDetailGrid();
-        let {TransactionItem} = grid.up('transcsales').stores;
+        let {STransactionItem} = grid.up('transcsales').stores;
         let store = grid.getStore();
         let count = 1;
         let Obj = {}, charts = [];
 
-        await TransactionItem.Filter({trans_id: record.get('id')});
+        await STransactionItem.Filter({trans_id: record.get('id')});
 
-        TransactionItem.each(function (chart, i) {
+        STransactionItem.each(function (chart, i) {
             let o = Object.assign({}, chart.getData());
             if (o.modifier_id) {
                 let key = o.transItem_id;
@@ -143,6 +130,7 @@ Ext.define('A.controller.transc.Sales', {
                 obj.qties = 0;
                 obj.info = '-';
             }
+            obj.nett = obj.total - obj.nett;
             count++;
         }
         store.parent = record;
@@ -170,34 +158,14 @@ Ext.define('A.controller.transc.Sales', {
         console.log('transcsales addTransaction')
     },
     //
-    filterGrid: async function () {
-        let me = this;
-
-        if (!me.ready4Filter) return;
-        me.ready4Filter = false;
-
-        let store = me.getDetailGrid().getStore();
-        let fields = [];
-        let value = me.getProductField().getValue();
-        let filter = store.getFilter() || {}, $or = [];
-
-        fields.forEach(function (el) {
-            if (el !== -1) $or.push({[el]: {$like: `%${value}%`}})
-        });
-
-        if (value && $or.length) filter['$or'] = $or;
-        else delete filter['$or'];
-
-        await store.Filter(Object.keys(filter).length ? filter : null);
-        me.ready4Filter = true;
-    },
     addProduct: async function () {
         let grid = this.getDetailGrid();
         let {Brand, Unit, Type, Product, ProductPrice} = grid.up('transcsales').stores;
         let store = grid.getStore();
         //
         try {
-            let name = new Date().getTime().toString(36);
+            console.log('add product to chart')
+            /*let name = new Date().getTime().toString(36);
             let unit_id = Unit.getAt(0).get('id');
             let brand_id = Brand.getAt(0).get('id');
 
@@ -215,24 +183,16 @@ Ext.define('A.controller.transc.Sales', {
                     await ProductPrice.Sync();
                     await store.load();
                 }
-            }
+            }*/
         } catch (e) {
             console.error(e)
         }
     },
-    actionProduct: function (gridView, dom, rowIndex, colIndex, event, record) {
+    deleteProduct: function (gridView, dom, rowIndex, colIndex, event, record) {
         let grid = this.getDetailGrid();
         let store = grid.getStore();
         let isdone = store.parent.get('isdone');
-        if (isdone) {
-            console.log('Will showing', [
-                {id: 1, name: 'Void'},
-                {id: 2, name: 'Returns'},
-                {id: 3, name: 'Bonus'},
-                {id: 4, name: 'Complimentary'},
-                {id: 5, name: 'Sample'}
-            ])
-        } else {
+        if (!isdone) {
             store.remove(record);
             let count = 1, charts = store.data.items.map(function (chart, i) {
                 return chart.raw
@@ -242,9 +202,11 @@ Ext.define('A.controller.transc.Sales', {
                 return chart;
             });
             store.loadData(charts);
+            //todo: removing chart
+            console.log('Removing record..', record)
         }
     },
-    removeProducts: function (cmp) {
+    deleteProducts: function (cmp) {
         let grid = this.getDetailGrid();
         let {items} = grid.getSelectionModel().selected;
         let {Product} = grid.up('transcsales').stores;
@@ -270,6 +232,12 @@ Ext.define('A.controller.transc.Sales', {
                 }
             });
         }
+    },
+    miscProduct: function (gridView, dom, rowIndex, colIndex, event, record) {
+        let grid = this.getDetailGrid();
+        let store = grid.getStore();
+        //todo: show modifier window
+        console.log('Showing modifier window..', record)
     },
     saveProducts: function (cmp) {
         let grid = this.getDetailGrid();
