@@ -1,5 +1,12 @@
 Ext.require([
+    'A.model.Actor',
+    'A.model.Code',
     'A.model.Type',
+    'A.model.Trans',
+    'A.model.TransItem',
+    'A.model.TransItemDisc',
+    'A.model.TransItemTax',
+    'A.model.TransPayment',
     'A.soap.Product',
     'A.soap.Transaction',
     'A.soap.TransactionItem'
@@ -7,26 +14,38 @@ Ext.require([
 Ext.define('A.view.transc.Sales', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.transcsales',
-    //layout: 'hbox',
     flex: 1,
     stores: {},
     initComponent: function () {
         let {currency} = A.app;
+        let Actor = Ext.create('A.store.Rest', {model: 'A.model.Actor'});
+        let Code = Ext.create('A.store.Rest', {model: 'A.model.Code'});
         let Type = Ext.create('A.store.Rest', {model: 'A.model.Type'});
+        let Trans = Ext.create('A.store.Rest', {model: 'A.model.Trans'});
+        let TransItem = Ext.create('A.store.Rest', {model: 'A.model.TransItem'});
+        let TransItemDisc = Ext.create('A.store.Rest', {model: 'A.model.TransItemDisc'});
+        let TransItemTax = Ext.create('A.store.Rest', {model: 'A.model.TransItemTax'});
+        let TransPayment = Ext.create('A.store.Rest', {model: 'A.model.TransPayment'});
+        //
         let SProduct = Ext.create('A.store.Rest', {model: 'A.soap.Product'});
         let STransaction = Ext.create('A.store.Rest', {model: 'A.soap.Transaction'});
         let STransactionItem = Ext.create('A.store.Rest', {model: 'A.soap.TransactionItem', pageSize: 200});
         let stores = {
-            Type, SProduct, STransaction, STransactionItem
+            Actor, Code, Type, Trans, TransItem, TransItemDisc,
+            TransItemTax, TransPayment,
+            //
+            SProduct, STransaction, STransactionItem
         };
         let paymentWindow = Ext.create('A.view.transc.PaymentWindow', {stores});
         let modifierWindow = Ext.create('A.view.transc.ModifierWindow', {stores});
+        let unitPriceWindow = Ext.create('A.view.transc.UnitPriceWindow', {stores});
 
         this.stores = stores;
 
         Ext.apply(this, {
             items: [
-                modifierWindow, paymentWindow,
+                modifierWindow, paymentWindow, unitPriceWindow,
+                //
                 Ext.create('Ext.panel.Panel', {
                     layout: 'border',
                     defaults: {

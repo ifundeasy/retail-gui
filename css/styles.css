@@ -43,6 +43,15 @@ input:-ms-input-placeholder {
 .right-text-align {
     text-align: right
 }
+.green-text {
+    color: #00a500;
+}
+.bold-text {
+    font-weight: bold;
+}
+.italic-text {
+    font-style: italic;
+}
 .row-body-tpl {
     margin-top: 0px;
     margin-bottom: 0px;

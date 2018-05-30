@@ -1,7 +1,9 @@
 Ext.define('A.controller.transc.Sales', {
     extend: 'Ext.app.Controller',
-    views: ['transc.Sales'],
+    views: ['transc.Sales', 'transc.UnitPriceWindow'],
     refs: [
+        {ref: 'unitPriceWindow', selector: 'transcsales unitPriceWindow'},
+        //
         {ref: 'masterGrid', selector: 'transcsales grid[prop="salesmaster"]'},
         {ref: 'detailGrid', selector: 'transcsales grid[prop="salesdetail"]'},
         {ref: 'totalItemsLabel', selector: 'transcsales grid[prop="salesdetail"] toolbar label[todo="totalitems"]'},
@@ -10,7 +12,7 @@ Ext.define('A.controller.transc.Sales', {
         {ref: 'addProductBtn', selector: 'transcsales grid[prop="salesdetail"] toolbar button[todo="add"]'},
         {ref: 'deleteProductsBtn', selector: 'transcsales grid[prop="salesdetail"] toolbar button[todo="delete"]'}
     ],
-    ready4Filter: true,
+    temp: {},
     events: {
         'transcsales textfield[todo="valueFilter"]': {
             specialkey: 'pressedEnter'
@@ -20,13 +22,13 @@ Ext.define('A.controller.transc.Sales', {
         },
         'transcsales grid[prop="salesmaster"]': {
             afterrender: 'addTransactionGrid',
-            itemclick: 'selectTransaction'
+            select: 'selectTransaction'
         },
         'transcsales grid[prop="salesmaster"] toolbar button[todo="add"]': {
             click: 'addTransaction'
         },
         'transcsales grid[prop="salesdetail"] toolbar button[todo="add"]': {
-            click: 'addProduct'
+            click: 'showQtyWindow'
         },
         'transcsales grid[prop="salesdetail"] toolbar button[todo="delete"]': {
             click: 'deleteProducts'
@@ -35,11 +37,11 @@ Ext.define('A.controller.transc.Sales', {
             click: 'deleteProduct'
         },
         'transcsales grid[prop="salesdetail"] gridcolumn[todo="misc"]': {
-            click: 'miscProduct'
+            click: 'showVoidWindow'
+        },
+        'transcsales unitPriceWindow toolbar button[action="add"]': {
+            click: 'addProduct'
         }
-    },
-    pressedEnter: function (cmp, e) {
-        if (e.keyCode === 13) this.addProduct();
     },
     refreshView: function (dataview) {
         if (dataview.panel) {
@@ -58,7 +60,13 @@ Ext.define('A.controller.transc.Sales', {
     addTransactionGrid: async function () {
         let me = this;
         let grid = me.getMasterGrid();
-        let {Type, SProduct} = grid.up('transcsales').stores;
+        let {Type, SProduct, TransItemDisc, TransItemTax} = grid.up('transcsales').stores;
+        let datetime = new Date(A.app.datetime);
+
+        datetime.setHours(0);
+        datetime.setMinutes(0);
+        datetime.setSeconds(0);
+
         let store = grid.getStore();
         let pgtoolbar = grid.down('pagingtoolbar');
 
@@ -69,6 +77,8 @@ Ext.define('A.controller.transc.Sales', {
         pgtoolbar.query('tbtext').forEach(function (el) {el.hide()});
         pgtoolbar.query('tbseparator').slice(0, 2).forEach(function (el) {el.hide()});
 
+        await TransItemDisc.Load();
+        await TransItemTax.Load();
         await Type.Filter({
             name: {
                 $or: [
@@ -78,10 +88,12 @@ Ext.define('A.controller.transc.Sales', {
             }
         });
 
-        this.type_id = Type.getAt(0).get('id');
+        me.temp.type_id = Type.getAt(0).get('id');
 
-        SProduct.setFilter({type_id: this.type_id});
-        store.setFilter({type_id: this.type_id}).sort('id', 'desc');
+        SProduct.sort('name', 'asc');
+        store.setFilter({type_id: me.temp.type_id}).sort('id', 'desc');
+        //todo: uncomment next line, and delete prev line
+        //store.setFilter({dc: {$gte: datetime}, type_id: me.temp.type_id}).sort('id', 'desc');
     },
     selectTransaction: async function (model, record, index) {
         let grid = this.getDetailGrid();
@@ -94,8 +106,15 @@ Ext.define('A.controller.transc.Sales', {
 
         STransactionItem.each(function (chart, i) {
             let o = Object.assign({}, chart.getData());
+            if (!o.modifier_id) {
+                Obj[o.id] = o;
+            }
+        });
+        STransactionItem.each(function (chart, i) {
+            let o = Object.assign({}, chart.getData());
             if (o.modifier_id) {
                 let key = o.transItem_id;
+
                 Obj[key].children = Obj[key].children || {};
                 if (Obj[key].children.hasOwnProperty(o.modifier_id)) {
                     Obj[key].children[o.modifier_id].disc += o.disc;
@@ -107,8 +126,6 @@ Ext.define('A.controller.transc.Sales', {
                     Obj[key].children[o.modifier_id] = o;
                     Obj[key].children[o.modifier_id].id = [o.id];
                 }
-            } else {
-                Obj[o.id] = o;
             }
         });
         for (let key in Obj) {
@@ -141,9 +158,6 @@ Ext.define('A.controller.transc.Sales', {
             this.getTotalMoneyLabel().prefix +
             Ext.util.Format.number(record.get('total'), '0,000.00')
         );
-        //this.getBonusProductsBtn().show();
-        //this.getComplimentaryProductsBtn().show();
-        //this.getSampleProductsBtn().show();
         if (store.parent.get('isdone')) {
             this.getDeleteProductsBtn().hide();
             this.getProductField().hide();
@@ -154,38 +168,149 @@ Ext.define('A.controller.transc.Sales', {
             this.getProductField().show();
         }
     },
-    addTransaction: function () {
-        console.log('transcsales addTransaction')
+    addTransaction: async function () {
+        let me = this;
+        let grid = me.getMasterGrid();
+        let store = grid.getStore();
+        let datetime = new Date(A.app.datetime);
+        let {Code, Trans} = grid.up('transcsales').stores;
+        let type_id = me.temp.type_id;
+
+        datetime.setHours(0);
+        datetime.setMinutes(0);
+        datetime.setSeconds(0);
+
+        await Code.Filter({
+            W_FIELD_NAME: 'type_id',
+            W_FIELD_VALUE: type_id
+        });
+
+        await Trans.Filter({
+            type_id, dc: {$gte: datetime}
+        });
+
+        let count1 = Code.getAt(0).get('count') + 1;
+        let count2 = Trans.totalCount + 1;
+        //
+        let person_id = A.app.backend.data.user.id;
+        let code = [Code.getAt(0).get('value'), Ext.Date.format(A.app.datetime, 'ymd'), count2].join('/');
+
+        Code.getAt(0).set('count', count1);
+        Trans.add({code, person_id, type_id});
+
+        await Code.Sync();
+        await Trans.Sync();
+        await store.Load();
+
+        grid.getSelectionModel().select(0);
     },
     //
-    addProduct: async function () {
-        let grid = this.getDetailGrid();
-        let {Brand, Unit, Type, Product, ProductPrice} = grid.up('transcsales').stores;
+    pressedEnter: function (cmp, e) {
+        if (e.keyCode === 13) this.showQtyWindow();
+    },
+    showQtyWindow: async function () {
+        let me = this;
+        let filter, productField = me.getProductField();
+        let grid = me.getDetailGrid();
         let store = grid.getStore();
-        //
-        try {
-            console.log('add product to chart')
-            /*let name = new Date().getTime().toString(36);
-            let unit_id = Unit.getAt(0).get('id');
-            let brand_id = Brand.getAt(0).get('id');
+        let unitPriceWindow = this.getUnitPriceWindow();
+        let {SProduct} = grid.up('transcsales').stores;
 
-            Product.insert(0, {name, brand_id});
+        if (!productField.valueModels) {
+            filter = {productCode_code: productField.getValue()}
+        } else if (productField.valueModels[0]) {
+            filter = {
+                id: productField.valueModels[0].data.id,
+                productCode_code: productField.valueModels[0].data.productCode_code
+            }
+        } else {
+            console.error('Error message:', 'Invalid product code');
+            return;
+        }
 
-            if (Type.count()) {
-                let product = await Product.Sync();
-                let {insertId} = JSON.parse(product.operations[0].response.responseText).data;
-                if (insertId) {
-                    ProductPrice.insert(0, {
-                        product_id: insertId,
-                        type_id: this.type_id,
-                        unit_id
+        let prices = {}, product = await SProduct.Filter(filter);
+
+        if (!product[0]) {
+            console.error('Error message:', 'Product not found');
+            return await SProduct.Filter({id: {$gte: 0}});
+        }
+
+        product = Object.assign({}, product[0].data);
+        product.prices = product.prices.filter(function (price) {
+            return price.type_id === me.temp.type_id ? 1 : 0
+        });
+        product.prices = product.prices.sort(function (a, b) {
+            return new Date(b.dc).getTime() - new Date(a.dc).getTime();
+        });
+        product.prices.forEach(function (price) {
+            let k = price.unit_id;
+            prices[k] = prices[k] || price;
+        });
+        product.prices = Object.keys(prices).map(function (k) {
+            return prices[k]
+        });
+
+        if (!product.prices.length){
+            console.error('Error message:', 'Product price not found');
+            return;
+        }
+
+        unitPriceWindow.INPUT = product;
+        unitPriceWindow.show();
+    },
+    addProduct: async function (el) {
+        let me = this;
+        let grid = me.getDetailGrid();
+        let store = grid.getStore();
+        let {TransItem, TransItemDisc, TransItemTax} = grid.up('transcsales').stores;
+        let window = el.up('window');
+        let {INPUT, OUTPUT} = window;
+        let person_id = A.app.backend.data.user.id;
+        if (OUTPUT) {
+            window.hide();
+            try {
+                await TransItem.Load();
+                TransItem.add({
+                    trans_id: store.parent.get('id'),
+                    transItem_id: null,
+                    modifier_id: null,
+                    qty: OUTPUT.qty,
+                    productPrice_id: OUTPUT.price.id,
+                    person_id, notes: null
+                });
+                let transItem = await TransItem.Sync();
+                let {insertId} = JSON.parse(transItem.operations[0].response.responseText).data;
+
+                OUTPUT.price.discounts.forEach(function(discount){
+                    TransItemDisc.add({
+                        transItem_id: insertId,
+                        productPriceDisc_id: discount.id,
+                        person_id, notes: null
                     });
-                    await ProductPrice.Sync();
-                    await store.load();
+                });
+                OUTPUT.price.taxes.forEach(function(tax){
+                    TransItemTax.add({
+                        transItem_id: insertId,
+                        productPriceTax_id: tax.id,
+                        person_id, notes: null
+                    });
+                });
+
+                if (OUTPUT.price.discounts.length) await TransItemDisc.Sync();
+                if (OUTPUT.price.taxes.length) await TransItemTax.Sync();
+
+                let record, records = await me.getMasterGrid().getStore().Load();
+                for (let r in records) {
+                    let rec = records[r];
+                    if (rec.get('id') === store.parent.get('id')) {
+                        record = rec;
+                        break;
+                    }
                 }
-            }*/
-        } catch (e) {
-            console.error(e)
+                me.selectTransaction(null, record);
+            } catch (e) {
+                console.error(e)
+            }
         }
     },
     deleteProduct: function (gridView, dom, rowIndex, colIndex, event, record) {
@@ -233,41 +358,11 @@ Ext.define('A.controller.transc.Sales', {
             });
         }
     },
-    miscProduct: function (gridView, dom, rowIndex, colIndex, event, record) {
+    showVoidWindow: function (gridView, dom, rowIndex, colIndex, event, record) {
         let grid = this.getDetailGrid();
         let store = grid.getStore();
         //todo: show modifier window
         console.log('Showing modifier window..', record)
-    },
-    saveProducts: function (cmp) {
-        let grid = this.getDetailGrid();
-        let store = grid.getStore();
-        let {Product} = grid.up('transcsales').stores;
-        let msg, deleting = store.removed.length;
-
-        if (deleting) {
-            msg = 'Deleting ' + deleting + ' items';
-            Ext.Msg.show({
-                title: 'Confirm',
-                msg: 'Operation such : ' + msg + ' will be save.<br/>Confirm for saving operation.',
-                buttons: Ext.MessageBox.YESNO,
-                closeable: false,
-                icon: Ext.Msg.QUESTION,
-                animateTarget: cmp,
-                fn: async function (choose) {
-                    if (choose === 'yes') {
-                        let mySync = await Product.Sync();
-                        if (mySync instanceof Error) {
-                            console.log(mySync)
-                        } else {
-                            console.log('SUCCESS', mySync);
-                            Product.Filter();
-                            await store.Load();
-                        }
-                    }
-                }
-            });
-        }
     },
     init: function () {
         let me = this;
@@ -280,5 +375,7 @@ Ext.define('A.controller.transc.Sales', {
             }
         }
         me.control(me.events);
+        //
+        Ext.create('A.controller.transc.UnitPriceWindow').init();
     }
 });

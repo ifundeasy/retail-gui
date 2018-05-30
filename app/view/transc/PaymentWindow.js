@@ -22,7 +22,7 @@ Ext.define('A.view.transc.PaymentWindow', {
     modal: true,
     initComponent: function () {
         let {moneyStep, currency} = A.app;
-        let {STransaction, STransactionItem} = this.stores;
+        let {Actor, STransaction, STransactionItem} = this.stores;
 
         Ext.apply(this, {
             items: [
