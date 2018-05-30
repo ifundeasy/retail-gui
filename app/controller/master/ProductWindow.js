@@ -68,11 +68,13 @@ Ext.define('A.controller.master.ProductWindow', {
         ProductCode.setFilter({product_id: id}).Sort('id', 'DESC');
         ProductTag.setFilter({product_id: id}).Sort('id', 'DESC');
 
-        await ProductPrice.setFilter({product_id: id}).Sort('id', 'DESC');
+        await ProductPrice.setFilter({productCode_product_id: id}).Sort('id', 'DESC');
 
         let $in = ProductPrice.data.keys;
-        ProductPriceTax.setFilter({productPrice_id: {$in}}).Sort('id', 'DESC');
-        ProductPriceDisc.setFilter({productPrice_id: {$in}}).Sort('id', 'DESC');
+        if ($in.length) {
+            ProductPriceTax.setFilter({productPrice_id: {$in}}).Sort('id', 'DESC');
+            ProductPriceDisc.setFilter({productPrice_id: {$in}}).Sort('id', 'DESC');
+        }
     },
     afterrender: async function (window) {
         let me = this;
@@ -90,7 +92,8 @@ Ext.define('A.controller.master.ProductWindow', {
             });
 
             $in = $in.length ? $in : ids;
-            this.setFilter({productPrice_id: {$in}});
+            if ($in.length) this.setFilter({productPrice_id: {$in}});
+            else this.setFilter({productPrice_id: {$in: ['A']}});
         };
 
         ProductPriceTax.on('beforeload', filtering);
@@ -302,12 +305,9 @@ Ext.define('A.controller.master.ProductWindow', {
 
         if (clsName === 'A.model.ProductPrice') {
             rec = store.insert(0, {
-                product_id,
                 type_id: Type.getAt(0).get('id'),
                 unit_id: Unit.getAt(0).get('id')
             });
-            await store.Sync();
-            await store.Load();
         } else if (['A.model.ProductPriceTax', 'A.model.ProductPriceDisc'].indexOf(clsName) > -1) {
             let priceTarget = me.getGridPrice().getSelectionModel().getSelection()[0];
             if (priceTarget) {

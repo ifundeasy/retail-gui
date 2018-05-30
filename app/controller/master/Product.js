@@ -117,12 +117,6 @@ Ext.define('A.controller.master.Product', {
                 let product = await Product.Sync();
                 let {insertId} = JSON.parse(product.operations[0].response.responseText).data;
                 if (insertId) {
-                    ProductPrice.insert(0, {
-                        product_id: insertId,
-                        type_id: this.type_id,
-                        unit_id
-                    });
-                    await ProductPrice.Sync();
                     await store.load();
                 }
             }
@@ -218,9 +212,7 @@ Ext.define('A.controller.master.Product', {
         await Brand.Load();
         await ProductPrice.Load();
 
-        store.setFilter({
-            type_id: this.type_id
-        }).sort('id', 'desc');
+        store.sort('name', 'asc');
     },
     init: function () {
         let me = this;
