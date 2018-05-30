@@ -12,8 +12,8 @@ Ext.define('A.view.master.ProductWindow', {
         {action: 'prev', text: 'Prev'},
         {action: 'next', text: 'Next'},
         '->',
-        {action: 'save', text: 'Save'},
         {action: 'close', text: 'Close'},
+        {action: 'save', text: 'Save'}
     ],
     border: false,
     modal: true,
@@ -309,11 +309,29 @@ Ext.define('A.view.master.ProductWindow', {
                                                     autoSizeColumn: true
                                                 },
                                                 {
+                                                    text: 'Code',
+                                                    dataIndex: 'productCode_id',
+                                                    minWidth: 100,
+                                                    autoSizeColumn: true,
+                                                    renderer: function (val, meta, record, rowIndex) {
+                                                        if (!record.dirty) return record.data.productCode_code || '';
+                                                        let idx = ProductCode.findExact('id', val);
+                                                        return (idx === -1) ? '' : ProductCode.getAt(idx).get('code');
+                                                    },
+                                                    editor: {
+                                                        xtype: 'suggestbox',
+                                                        displayField: 'code',
+                                                        valueField: 'id',
+                                                        editable: false,
+                                                        store: ProductCode
+                                                    }
+                                                },
+                                                {
                                                     text: 'Price',
                                                     dataIndex: 'price',
                                                     xtype: 'numbercolumn',
                                                     format: ',0.00',
-                                                    minWidth: 120,
+                                                    minWidth: 100,
                                                     autoSizeColumn: true,
                                                     align: 'right',
                                                     editor: {

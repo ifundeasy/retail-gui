@@ -12,7 +12,7 @@ Ext.require([
     'A.model.ProductPrice',
     'A.model.ProductPriceDisc',
     'A.model.ProductPriceTax',
-    'A.soap.Product',
+    'A.soap.ProductSummary',
     'A.view.master.ProductWindow'
 ]);
 Ext.define('A.view.master.Product', {
@@ -35,7 +35,7 @@ Ext.define('A.view.master.Product', {
         let Unit = Ext.create('A.store.Rest', {model: 'A.model.Unit'});
         let Tax = Ext.create('A.store.Rest', {model: 'A.model.Tax'});
         let Discount = Ext.create('A.store.Rest', {model: 'A.model.Discount'});
-        let ProductInfo = Ext.create('A.store.Rest', {model: 'A.soap.Product'});
+        let ProductInfo = Ext.create('A.store.Rest', {model: 'A.soap.ProductSummary'});
         let stores = {
             Type, Brand, Parent, Product, ProductCode, ProductTag,
             ProductPrice, ProductPriceDisc, ProductPriceTax, Status,
@@ -61,24 +61,81 @@ Ext.define('A.view.master.Product', {
                 locked: true
             },
             {
-                text: 'Code',
+                text: 'Codes',
                 dataIndex: 'productCode_code',
                 minWidth: 100,
                 autoSizeColumn: true,
                 lockable: true,
-                locked: true
+                locked: true,
+                renderer: function (val, meta, record) {
+                    if (!val) return '-';
+
+                    return val;
+                }
             },
             {
-                text: 'Sales Price',
+                text: 'Prices',
                 dataIndex: 'productPrice_price',
-                xtype: 'numbercolumn',
-                format: ',0.00',
+                //xtype: 'numbercolumn',
+                //format: ',0.00',
                 minWidth: 120,
                 autoSizeColumn: true,
-                align: 'right'
+                align: 'right',
+                renderer: function (val, meta, record) {
+                    if (!val) return '-';
+
+                    let price = [];
+                    let prices = val.split(', ').map(function (el) {
+                        return parseFloat(el)
+                    }).sort();
+
+                    if (prices.length > 1) {
+                        price.push(prices[0], prices[prices.length-1])
+                    } else {
+                        price = prices
+                    }
+
+                    return price.map(function (p) {
+                        return Ext.util.Format.number(p, '0,000.00')
+                    }).join(' ~ ')
+                }
             },
             {
-                text: 'Unit',
+                text: 'Discounts',
+                dataIndex: 'productPriceDisc_value',
+                minWidth: 100,
+                autoSizeColumn: true,
+                align: 'right',
+                renderer: function (val, meta, record) {
+                    if (!val) return '-';
+
+                    return val.split(', ').map(function (el) {
+                        return el.indexOf('%') > -1 ? el : Ext.util.Format.number(parseFloat(el), '0,000.00')
+                    }).join('; ');
+                }
+            },
+            {
+                text: 'Taxes',
+                dataIndex: 'productPriceTax_value',
+                minWidth: 80,
+                autoSizeColumn: true,
+                align: 'right',
+                renderer: function (val, meta, record) {
+                    if (!val) return '-';
+
+                    return val.split(', ').map(function (el) {
+                        return el.indexOf('%') > -1 ? el : Ext.util.Format.number(parseFloat(el), '0,000.00')
+                    }).join('; ');
+                }
+            },
+            {
+                text: 'Brand',
+                dataIndex: 'brand_name',
+                minWidth: 100,
+                autoSizeColumn: true
+            },
+            {
+                text: 'Units',
                 dataIndex: 'unit_name',
                 minWidth: 100,
                 autoSizeColumn: true,
@@ -89,24 +146,6 @@ Ext.define('A.view.master.Product', {
                     if (value && !shortname) return value;
                     if (!value && shortname) return shortname;
                 }
-            },
-            {
-                text: 'Discounts',
-                dataIndex: 'productPriceDisc_value',
-                minWidth: 100,
-                autoSizeColumn: true
-            },
-            {
-                text: 'Taxes',
-                dataIndex: 'productPriceTax_value',
-                minWidth: 100,
-                autoSizeColumn: true
-            },
-            {
-                text: 'Brand',
-                dataIndex: 'brand_name',
-                minWidth: 100,
-                autoSizeColumn: true
             },
             {
                 text: 'Tags',
