@@ -24,8 +24,8 @@ Ext.onReady(function () {
         });
     } else {
         let {protocol, ip, port, name} = backend;
+        ip = ip || 'localhost';
         backend.origin = `${protocol + ip}:${port}`;
-
         $('title').text(backend.name);
 
         Ext.override(Ext, {
@@ -61,7 +61,15 @@ Ext.onReady(function () {
             title: name,
             enableQuickTips: true,
             backend, ajax,
-            autoCreateViewport: true
+            autoCreateViewport: true,
+            datetime: backend.time
         });
+        //
+        setInterval(function () {
+            let nDateTime = new Date(new Date(A.app.datetime).getTime() + 1000);
+            A.app.datetime = nDateTime;
+            A.app.date = Ext.Date.format(nDateTime, 'Y-m-d');
+            A.app.time = Ext.Date.format(nDateTime, 'H:i:s');
+        }, 1000)
     }
 });
