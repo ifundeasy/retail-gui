@@ -7,7 +7,7 @@ Ext.define('A.soap.TransactionItem', {
         {name: 'trans_id', type: 'int'},
         {name: 'person_id', type: 'int'},
         {name: 'person_name', type: 'string'},
-        {name: 'modifier_id', type: 'auto'},
+        {name: 'modifier_id', type: 'int'},
         {name: 'modifier_name', type: 'string'},
         {name: 'transItem_id', type: 'auto'},
         {
