@@ -12,9 +12,10 @@ Ext.define('A.controller.transc.Sales', {
         {ref: 'addProductBtn', selector: 'transcsales grid[prop="salesdetail"] toolbar button[todo="add"]'},
         {ref: 'deleteProductsBtn', selector: 'transcsales grid[prop="salesdetail"] toolbar button[todo="delete"]'}
     ],
-    temp: {},
     events: {
         'transcsales textfield[todo="valueFilter"]': {
+            focus: 'focused',
+            change: 'selectedProduct',
             specialkey: 'pressedEnter'
         },
         'transcsales grid dataview': {
@@ -43,6 +44,7 @@ Ext.define('A.controller.transc.Sales', {
             click: 'addProduct'
         }
     },
+    temp: {}, ready: true, readyPress: false,
     refreshView: function (dataview) {
         if (dataview.panel) {
             Ext.each(dataview.panel.columns, function (column) {
@@ -156,7 +158,7 @@ Ext.define('A.controller.transc.Sales', {
         this.getTotalItemsLabel().setText(record.get('numofprod'));
         this.getTotalMoneyLabel().setText(
             this.getTotalMoneyLabel().prefix +
-            Ext.util.Format.number(record.get('total'), '0,000.00')
+            A.app.formatMoney(record.get('total'))
         );
         if (store.parent.get('isdone')) {
             this.getDeleteProductsBtn().hide();
@@ -166,6 +168,8 @@ Ext.define('A.controller.transc.Sales', {
             this.getDeleteProductsBtn().show();
             this.getAddProductBtn().show();
             this.getProductField().show();
+            this.getProductField().focus();
+            this.getProductField().clearValue();
         }
     },
     addTransaction: async function () {
@@ -205,34 +209,65 @@ Ext.define('A.controller.transc.Sales', {
         grid.getSelectionModel().select(0);
     },
     //
-    pressedEnter: function (cmp, e) {
-        if (e.keyCode === 13) this.showQtyWindow();
+    focused: async function () {
+        let me = this;
+        let grid = me.getDetailGrid();
+        let {SProduct} = grid.up('transcsales').stores;
+        //
+        await SProduct.Filter({id: {$gte: 0}});
     },
-    showQtyWindow: async function () {
+    selectedProduct: function (cmp, e) {
+        let me = this, values = [];
+        if (me.ready) {
+            me.ready = false;
+
+            let i = 0, z = setInterval(function () {
+                let test = cmp.valueModels ? cmp.valueModels[0] : null;
+
+                values.push(test ? 1 : 0);
+                if ((i > 5) || (values.indexOf(1) > -1)) {
+                    clearInterval(z);
+                    me.ready = true;
+                }
+                i++;
+            }, 200);
+        }
+    },
+    pressedEnter: function (cmp, e) {
+        let me = this;
+        if (me.ready && e.keyCode === 13) {
+            if (me.readyPress) {
+                me.readyPress = false;
+                me.showQtyWindow();
+            } else {
+                me.readyPress = true;
+                let z = setTimeout(function () {
+                    clearTimeout(z);
+                    me.pressedEnter(cmp, e, true);
+                }, 200)
+            }
+        }
+    },
+    showQtyWindow: async function (data) {
         let me = this;
         let filter, productField = me.getProductField();
         let grid = me.getDetailGrid();
-        let store = grid.getStore();
         let unitPriceWindow = this.getUnitPriceWindow();
         let {SProduct} = grid.up('transcsales').stores;
 
         if (!productField.valueModels) {
             filter = {productCode_code: productField.getValue()}
         } else if (productField.valueModels[0]) {
-            filter = {
-                id: productField.valueModels[0].data.id,
-                productCode_code: productField.valueModels[0].data.productCode_code
-            }
+            let {id, productCode_code} = productField.valueModels[0].getData();
+            filter = {id, productCode_code};
         } else {
-            console.error('Error message:', 'Invalid product code');
             return;
         }
 
         let prices = {}, product = await SProduct.Filter(filter);
-
         if (!product[0]) {
             console.error('Error message:', 'Product not found');
-            return await SProduct.Filter({id: {$gte: 0}});
+            return;
         }
 
         product = Object.assign({}, product[0].data);
@@ -250,7 +285,7 @@ Ext.define('A.controller.transc.Sales', {
             return prices[k]
         });
 
-        if (!product.prices.length){
+        if (!product.prices.length) {
             console.error('Error message:', 'Product price not found');
             return;
         }
@@ -281,14 +316,14 @@ Ext.define('A.controller.transc.Sales', {
                 let transItem = await TransItem.Sync();
                 let {insertId} = JSON.parse(transItem.operations[0].response.responseText).data;
 
-                OUTPUT.price.discounts.forEach(function(discount){
+                OUTPUT.price.discounts.forEach(function (discount) {
                     TransItemDisc.add({
                         transItem_id: insertId,
                         productPriceDisc_id: discount.id,
                         person_id, notes: null
                     });
                 });
-                OUTPUT.price.taxes.forEach(function(tax){
+                OUTPUT.price.taxes.forEach(function (tax) {
                     TransItemTax.add({
                         transItem_id: insertId,
                         productPriceTax_id: tax.id,

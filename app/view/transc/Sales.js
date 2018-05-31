@@ -114,7 +114,9 @@ Ext.define('A.view.transc.Sales', {
                                     align: 'right',
                                     minWidth: 50,
                                     autoSizeColumn: true,
-                                    renderer: Ext.util.Format.numberRenderer('0,000.00')
+                                    //renderer: Ext.util.Format.numberRenderer('0,000.00')
+                                    xtype: 'numbercolumn',
+                                    format: A.app.intSeparator
                                 }
                             ],
                             dockedItems: [
@@ -151,9 +153,9 @@ Ext.define('A.view.transc.Sales', {
                                 {
                                     ptype: 'rowexpander',
                                     rowBodyTpl: new Ext.XTemplate(
-                                        '<p class="row-body-tpl"><b>Taxes:</b> {tax}</p>',
-                                        '<p class="row-body-tpl"><b>Discounts:</b> {disc}</p>',
-                                        '<p class="row-body-tpl"><b>Modifier:</b> {info}</p>'
+                                        '<p class="row-body-tpl"><b>Modified:</b> {info}</p>',
+                                        '<p class="row-body-tpl"><b>Discounts:</b> {disc2}</p>',
+                                        '<p class="row-body-tpl"><b>Taxes:</b> {tax2}</p>',
                                     )
                                 }
                             ],
@@ -167,10 +169,25 @@ Ext.define('A.view.transc.Sales', {
                                     autoSizeColumn: true
                                 },
                                 {
+                                    text: 'Code',
+                                    dataIndex: 'productCode_code',
+                                    minWidth: 75,
+                                    autoSizeColumn: true
+                                },
+                                {
                                     text: 'Name',
                                     dataIndex: 'product_name',
                                     minWidth: 100,
                                     autoSizeColumn: true
+                                },
+                                {
+                                    text: 'Price',
+                                    dataIndex: 'productPrice_price',
+                                    align: 'right',
+                                    minWidth: 70,
+                                    autoSizeColumn: true,
+                                    xtype: 'numbercolumn',
+                                    format: A.app.intSeparator
                                 },
                                 {
                                     text: 'Q',
@@ -187,26 +204,19 @@ Ext.define('A.view.transc.Sales', {
                                     autoSizeColumn: true
                                 },
                                 {
-                                    text: 'Unit',
-                                    dataIndex: 'unit_name',
-                                    minWidth: 70,
-                                    autoSizeColumn: true
-                                },
-                                {
-                                    text: 'Price',
-                                    dataIndex: 'productPrice_price',
-                                    align: 'right',
-                                    minWidth: 70,
-                                    autoSizeColumn: true,
-                                    renderer: Ext.util.Format.numberRenderer('0,000.00')
-                                },
-                                {
                                     text: 'Nett',
                                     dataIndex: 'nett',
                                     align: 'right',
                                     minWidth: 70,
                                     autoSizeColumn: true,
-                                    renderer: Ext.util.Format.numberRenderer('0,000.00')
+                                    xtype: 'numbercolumn',
+                                    format: A.app.intSeparator
+                                },
+                                {
+                                    text: 'Unit',
+                                    dataIndex: 'unit_name',
+                                    minWidth: 70,
+                                    autoSizeColumn: true
                                 },
                                 {
                                     text: 'Notes', dataIndex: 'notes'
@@ -273,6 +283,7 @@ Ext.define('A.view.transc.Sales', {
                                             labelWidth: 50,
                                             labelSeparator: '',
                                             typeAhead: false,
+                                            autoSelect: false,
                                             tooltip: 'Value filter',
                                             xtype: 'suggestbox',
                                             valueField: 'productCode_code',

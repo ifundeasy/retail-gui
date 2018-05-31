@@ -40,6 +40,10 @@ Ext.define('A.soap.Transaction', {
                 let balance = d.get('balance');
                 let num = d.get('numofprod');
                 if (!num) return false;
+
+                let total = d.get('total');
+                let paywith = d.get('paywith');
+                if (!(paywith >= total)) return false;
                 return !(balance > 0)
             }
         }

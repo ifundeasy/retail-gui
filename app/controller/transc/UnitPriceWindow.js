@@ -8,9 +8,9 @@ Ext.define('A.controller.transc.UnitPriceWindow', {
         {ref: 'discountLbl', selector: 'unitPriceWindow panel[todo="buttons"] toolbar label[todo="discounts"]'},
         {ref: 'nettpriceLbl', selector: 'unitPriceWindow panel[todo="buttons"] toolbar label[todo="nettprice"]'},
         {ref: 'buttonsPanel', selector: 'unitPriceWindow panel[todo="buttons"]'},
-        {ref: 'buttonsPanel', selector: 'unitPriceWindow panel[todo="buttons"]'},
         {ref: 'qtyField', selector: 'unitPriceWindow numberfield[todo="qty"]'},
-        {ref: 'closeBtn', selector: 'unitPriceWindow button[action="close"]'}
+        {ref: 'closeBtn', selector: 'unitPriceWindow button[action="close"]'},
+        {ref: 'addBtn', selector: 'unitPriceWindow button[action="add"]'}
     ],
     activeBtn: null,
     events: {
@@ -18,7 +18,8 @@ Ext.define('A.controller.transc.UnitPriceWindow', {
             show: 'show'
         },
         'unitPriceWindow numberfield[todo="qty"]': {
-            change: 'calculate'
+            change: 'calculate',
+            specialkey: 'pressedEnter'
         },
         'unitPriceWindow panel[todo="buttons"] button': {
             click: 'clickUnitBtn'
@@ -37,10 +38,6 @@ Ext.define('A.controller.transc.UnitPriceWindow', {
         //
         me.activeBtn = null;
         window.setTitle(`Qty: ${INPUT.name} (${INPUT.productCode_code})`);
-        //
-        me.getQtyField().focus();
-        me.getQtyField().setValue(1);
-        //
         panel.removeAll();
         INPUT.prices.forEach(function (price) {
             panel.add({
@@ -54,6 +51,8 @@ Ext.define('A.controller.transc.UnitPriceWindow', {
         me.getPriceLbl().setText(me.formatMoney(0));
         me.getDiscountLbl().setText(me.formatMoney(0));
         me.getNettpriceLbl().setText(me.formatMoney(0));
+        me.getQtyField().setValue(1);
+        me.getQtyField().focus();
         window.OUTPUT = null;
     },
     clickUnitBtn: function (el) {
@@ -69,7 +68,7 @@ Ext.define('A.controller.transc.UnitPriceWindow', {
     },
     formatMoney: function (int) {
         let {currency} = A.app;
-        return currency + ' ' + Ext.util.Format.number(int, '0,000.00');
+        return currency + ' ' + A.app.formatMoney(int);
     },
     calculate: function () {
         let me = this;
@@ -90,6 +89,12 @@ Ext.define('A.controller.transc.UnitPriceWindow', {
             window.OUTPUT = {
                 qty, price: el.data
             }
+        }
+        me.getQtyField().focus();
+    },
+    pressedEnter: function (cmp, e) {
+        if (e.keyCode === 13) {
+            this.getAddBtn().fireEvent('click', this.getAddBtn());
         }
     },
     clickCloseBtn: function () {
