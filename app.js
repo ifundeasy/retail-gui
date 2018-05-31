@@ -62,7 +62,12 @@ Ext.onReady(function () {
             enableQuickTips: true,
             backend, ajax,
             autoCreateViewport: true,
-            datetime: backend.time
+            datetime: backend.time,
+            intSeparator: ',0',
+            floatSeparator: ',0.00',
+            formatMoney: function (value, format) {
+                return Ext.util.Format.number(value, format || this.intSeparator);
+            }
         });
         //
         setInterval(function () {

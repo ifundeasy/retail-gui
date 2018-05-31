@@ -330,7 +330,7 @@ Ext.define('A.view.master.ProductWindow', {
                                                     text: 'Price',
                                                     dataIndex: 'price',
                                                     xtype: 'numbercolumn',
-                                                    format: ',0.00',
+                                                    format: A.app.intSeparator,
                                                     minWidth: 100,
                                                     autoSizeColumn: true,
                                                     align: 'right',
@@ -481,7 +481,7 @@ Ext.define('A.view.master.ProductWindow', {
                                                         let idx = Tax.findExact('id', val);
                                                         if (idx === -1) return '';
                                                         let isPercent = Tax.getAt(idx).get('isPercent');
-                                                        let value = Ext.util.Format.number(Tax.getAt(idx).get('value'), ',0.00');
+                                                        let value =  A.app.formatMoney(Tax.getAt(idx).get('value'));
                                                         if (isPercent === '1') return '% ' + value;
                                                         return value
                                                     }
@@ -571,7 +571,7 @@ Ext.define('A.view.master.ProductWindow', {
                                                         let idx = Discount.findExact('id', val);
                                                         if (idx === -1) return '';
                                                         let isPercent = Discount.getAt(idx).get('isPercent');
-                                                        let value = Ext.util.Format.number(Discount.getAt(idx).get('value'), ',0.00');
+                                                        let value =  A.app.formatMoney(Discount.getAt(idx).get('value'));
                                                         if (isPercent === '1') return '(%) ' + value;
                                                         return value
                                                     }

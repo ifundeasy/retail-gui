@@ -128,7 +128,8 @@ Ext.define('A.view.transc.PaymentWindow', {
                             align: 'right',
                             minWidth: 70,
                             autoSizeColumn: true,
-                            renderer: Ext.util.Format.numberRenderer('0,000.00')
+                            xtype: 'numbercolumn',
+                            format: A.app.intSeparator
                         },
                         {
                             text: 'Other',

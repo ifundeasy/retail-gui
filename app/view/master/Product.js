@@ -76,8 +76,6 @@ Ext.define('A.view.master.Product', {
             {
                 text: 'Prices',
                 dataIndex: 'productPrice_price',
-                //xtype: 'numbercolumn',
-                //format: ',0.00',
                 minWidth: 120,
                 autoSizeColumn: true,
                 align: 'right',
@@ -96,7 +94,7 @@ Ext.define('A.view.master.Product', {
                     }
 
                     return price.map(function (p) {
-                        return Ext.util.Format.number(p, '0,000.00')
+                        return A.app.formatMoney(p)
                     }).join(' ~ ')
                 }
             },
@@ -110,7 +108,7 @@ Ext.define('A.view.master.Product', {
                     if (!val) return '-';
 
                     return val.split(', ').map(function (el) {
-                        return el.indexOf('%') > -1 ? el : Ext.util.Format.number(parseFloat(el), '0,000.00')
+                        return el.indexOf('%') > -1 ? el : A.app.formatMoney(parseFloat(el))
                     }).join('; ');
                 }
             },
@@ -124,7 +122,7 @@ Ext.define('A.view.master.Product', {
                     if (!val) return '-';
 
                     return val.split(', ').map(function (el) {
-                        return el.indexOf('%') > -1 ? el : Ext.util.Format.number(parseFloat(el), '0,000.00')
+                        return el.indexOf('%') > -1 ? el :  A.app.formatMoney(parseFloat(el))
                     }).join('; ');
                 }
             },
