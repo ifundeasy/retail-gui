@@ -36,15 +36,15 @@ Ext.define('A.view.transc.Sales', {
             //
             SProduct, STransaction, STransactionItem
         };
-        let paymentWindow = Ext.create('A.view.transc.PaymentWindow', {stores});
-        let modifierWindow = Ext.create('A.view.transc.ModifierWindow', {stores});
-        let unitPriceWindow = Ext.create('A.view.transc.UnitPriceWindow', {stores});
+        let salesPayWindow = Ext.create('A.view.transc.SalesPayWindow', {stores});
+        let salesModWindow = Ext.create('A.view.transc.SalesModWindow', {stores});
+        let salesUnitWindow = Ext.create('A.view.transc.SalesUnitWindow', {stores});
 
         this.stores = stores;
 
         Ext.apply(this, {
             items: [
-                modifierWindow, paymentWindow, unitPriceWindow,
+                salesUnitWindow, salesModWindow, salesPayWindow,
                 //
                 Ext.create('Ext.panel.Panel', {
                     layout: 'border',

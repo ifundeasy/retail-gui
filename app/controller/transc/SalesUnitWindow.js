@@ -1,33 +1,33 @@
-Ext.define('A.controller.transc.UnitPriceWindow', {
+Ext.define('A.controller.transc.SalesUnitWindow', {
     extend: 'Ext.app.Controller',
-    views: ['transc.UnitPriceWindow'],
+    views: ['transc.SalesUnitWindow'],
     refs: [
-        {ref: 'window', selector: 'unitPriceWindow'},
-        {ref: 'buttonsPanel', selector: 'unitPriceWindow panel[todo="buttons"]'},
-        {ref: 'priceLbl', selector: 'unitPriceWindow panel[todo="buttons"] toolbar label[todo="price"]'},
-        {ref: 'discountLbl', selector: 'unitPriceWindow panel[todo="buttons"] toolbar label[todo="discounts"]'},
-        {ref: 'nettpriceLbl', selector: 'unitPriceWindow panel[todo="buttons"] toolbar label[todo="nettprice"]'},
-        {ref: 'buttonsPanel', selector: 'unitPriceWindow panel[todo="buttons"]'},
-        {ref: 'qtyField', selector: 'unitPriceWindow numberfield[todo="qty"]'},
-        {ref: 'closeBtn', selector: 'unitPriceWindow button[action="close"]'},
-        {ref: 'addBtn', selector: 'unitPriceWindow button[action="add"]'}
+        {ref: 'window', selector: 'salesUnitWindow'},
+        {ref: 'buttonsPanel', selector: 'salesUnitWindow panel[todo="buttons"]'},
+        {ref: 'priceLbl', selector: 'salesUnitWindow panel[todo="buttons"] toolbar label[todo="price"]'},
+        {ref: 'discountLbl', selector: 'salesUnitWindow panel[todo="buttons"] toolbar label[todo="discounts"]'},
+        {ref: 'nettpriceLbl', selector: 'salesUnitWindow panel[todo="buttons"] toolbar label[todo="nettprice"]'},
+        {ref: 'buttonsPanel', selector: 'salesUnitWindow panel[todo="buttons"]'},
+        {ref: 'qtyField', selector: 'salesUnitWindow numberfield[todo="qty"]'},
+        {ref: 'closeBtn', selector: 'salesUnitWindow button[action="close"]'},
+        {ref: 'addBtn', selector: 'salesUnitWindow button[action="add"]'}
     ],
     activeBtn: null,
     events: {
-        'unitPriceWindow': {
+        'salesUnitWindow': {
             show: 'show'
         },
-        'unitPriceWindow numberfield[todo="qty"]': {
+        'salesUnitWindow numberfield[todo="qty"]': {
             change: 'calculate',
             specialkey: 'pressedEnter'
         },
-        'unitPriceWindow panel[todo="buttons"] button': {
+        'salesUnitWindow panel[todo="buttons"] button': {
             click: 'clickUnitBtn'
         },
-        'unitPriceWindow button[action=save]': {
+        'salesUnitWindow button[action=save]': {
             click: 'clickSaveBtn'
         },
-        'unitPriceWindow button[action=close]': {
+        'salesUnitWindow button[action=close]': {
             click: 'clickCloseBtn'
         }
     },

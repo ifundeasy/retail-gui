@@ -1,6 +1,6 @@
-Ext.define('A.view.transc.UnitPriceWindow', {
+Ext.define('A.view.transc.PurchaseUnitWindow', {
     extend: 'Ext.window.Window',
-    alias: 'widget.unitPriceWindow',
+    alias: 'widget.purchaseUnitWindow',
     closeAction: 'hide',
     closable: true,
     resizable: true,

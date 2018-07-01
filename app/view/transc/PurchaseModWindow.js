@@ -1,6 +1,6 @@
-Ext.define('A.view.transc.ModifierWindow', {
+Ext.define('A.view.transc.PurchaseModWindow', {
     extend: 'Ext.window.Window',
-    alias: 'widget.modifierWindow',
+    alias: 'widget.purchaseModWindow',
     closeAction: 'hide',
     closable: true,
     resizable: true,

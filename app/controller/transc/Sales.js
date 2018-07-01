@@ -1,8 +1,8 @@
 Ext.define('A.controller.transc.Sales', {
     extend: 'Ext.app.Controller',
-    views: ['transc.Sales', 'transc.UnitPriceWindow'],
+    views: ['transc.Sales', 'transc.SalesUnitWindow'],
     refs: [
-        {ref: 'unitPriceWindow', selector: 'transcsales unitPriceWindow'},
+        {ref: 'salesUnitWindow', selector: 'transcsales salesUnitWindow'},
         //
         {ref: 'masterGrid', selector: 'transcsales grid[prop="salesmaster"]'},
         {ref: 'detailGrid', selector: 'transcsales grid[prop="salesdetail"]'},
@@ -40,7 +40,7 @@ Ext.define('A.controller.transc.Sales', {
         'transcsales grid[prop="salesdetail"] gridcolumn[todo="misc"]': {
             click: 'showVoidWindow'
         },
-        'transcsales unitPriceWindow toolbar button[action="add"]': {
+        'transcsales salesUnitWindow toolbar button[action="add"]': {
             click: 'addProduct'
         }
     },
@@ -85,7 +85,8 @@ Ext.define('A.controller.transc.Sales', {
             name: {
                 $or: [
                     {$like: '%jual%'},
-                    {$like: '%sale%'}
+                    {$like: '%sale%'},
+                    {$like: '%sales%'}
                 ]
             }
         });
@@ -252,7 +253,7 @@ Ext.define('A.controller.transc.Sales', {
         let me = this;
         let filter, productField = me.getProductField();
         let grid = me.getDetailGrid();
-        let unitPriceWindow = this.getUnitPriceWindow();
+        let salesUnitWindow = this.getSalesUnitWindow();
         let {SProduct} = grid.up('transcsales').stores;
 
         if (!productField.valueModels) {
@@ -290,8 +291,8 @@ Ext.define('A.controller.transc.Sales', {
             return;
         }
 
-        unitPriceWindow.INPUT = product;
-        unitPriceWindow.show();
+        salesUnitWindow.INPUT = product;
+        salesUnitWindow.show();
     },
     addProduct: async function (el) {
         let me = this;
@@ -411,6 +412,6 @@ Ext.define('A.controller.transc.Sales', {
         }
         me.control(me.events);
         //
-        Ext.create('A.controller.transc.UnitPriceWindow').init();
+        Ext.create('A.controller.transc.SalesUnitWindow').init();
     }
 });

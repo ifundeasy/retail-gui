@@ -1,6 +1,6 @@
-Ext.define('A.view.transc.PaymentWindow', {
+Ext.define('A.view.transc.SalesPayWindow', {
     extend: 'Ext.window.Window',
-    alias: 'widget.paymentWindow',
+    alias: 'widget.salesPayWindow',
     closeAction: 'hide',
     closable: true,
     resizable: true,
